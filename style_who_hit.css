@@ -1,0 +1,100 @@
+.viewer{
+	display: block;
+	width: 100%;
+	float: left;
+	position: relative;
+}
+.viwer p{
+	display: block;
+	float: left;
+	width: 100%;
+	position: relative;
+	padding: 10px;
+	float: left;
+}
+textarea{
+	display: block;
+	float: left;
+	width: 100%;
+	padding: 10px;
+	position: relative;
+	float: left;
+}
+
+h2{
+	display: block;
+	width: 98%;
+	float: left;
+	position: relative;
+	border-bottom: #999 thin 1px dotted;
+	padding: 10px;
+	background:#333;
+	color: #FFF;
+	text-transform:capitalize;
+	float: left;
+}
+h4.not-found{
+	background-color:#FF6633;
+	padding: 10px;
+	color: #FFF;
+	float: left;
+}
+
+.hits, .ip-table{width: 98%;float: left;}
+
+.hits li{
+	display: inline;
+	float: left;
+	list-style-type: none;
+	border-bottom: #666 thin 1px dotted;
+	padding: 5px;
+}
+.hits li{width: 48%;}
+
+.hits li.even{background-color:#CCC;}
+.hits li.odd{background-color: #9FF;}
+
+.hits ul.author{
+	width: 90%;
+	display: block;
+	float: right;
+}
+.hits li form{
+	width: 80%;
+	position: relative;
+	display: block; 
+	float: right;
+}
+.hits li form input{
+	padding: 5px;
+	display: block;
+	width: 100%;
+}
+table{
+	float: left;
+	position: relative;
+}
+
+ /* IP stats table */
+table.ip-table{
+	width: 100%;
+	padding: 0px;
+	font-size: 12px;
+}
+
+table.ip-table{border-bottom: #666 thin 1px dotted;}
+table.ip-table tr td h4{font-size: 14px; padding: 5px;}
+
+table.ip-table tr .ip-title{width: 18%;border-bottom: #666 thin 1px dotted;}
+table.ip-table tr .agent-title{width: 64%;border-bottom: #666 thin 1px dotted;}
+table.ip-table tr .time-title{width: 18%;border-bottom: #666 thin 1px dotted;}
+
+table.ip-table tr .ip{width: 18%; background-color:#CCCCCC;}
+table.ip-table tr .agent{width: 64%; background-color:#00FF00;}
+table.ip-table tr .time{width: 18%; background-color: #FCC;}
+
+.title-footer{
+	background-color:#333;
+	color:#FFFFFF;
+	padding: 3px;	
+}
