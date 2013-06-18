@@ -59,7 +59,7 @@ No! Who Hit The Page -  Hit Counter is an invisible hit counter, it doesn't show
 == Arbitrary section ==
 
 The hit counter does not have a visible display on your website, but instead counts the visitors and register the user information on your wordpress database.
-You will be able to see the stats on your wordpress admin, just click on the `WP Hit Counter` link on the side menu of your wordpress admin page. 
+You will be able to see the stats on your wordpress admin, just click on the `Who Hit The Page` link on the side menu of your wordpress admin page. 
 
 * Place the following shortcode snippet in any page or post you wish visitors counted on. <code>[whohit]-Page name or identifier-[/whohit]</code> 
 - please remember to replace the `<code>-Page name or identifier-</code>` with the name of the page you placed the shortcode on, 
