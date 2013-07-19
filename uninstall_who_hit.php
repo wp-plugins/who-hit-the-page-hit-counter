@@ -7,7 +7,7 @@
 */
 
 // delete the hits information table
-$drop 		= 'DROP TABLE IF EXISTS whtp_hitinfo';
+/*$drop 		= 'DROP TABLE IF EXISTS whtp_hitinfo';
 $drop_now 	= mysql_query($drop);
 
 if ( !$drop_now ){
@@ -20,5 +20,5 @@ $drop_now2 	= mysql_query($drop2);
 
 if ( !$drop_now2 ){
 	echo 'Failed to drop the whtp_hits table' . mysql_error();
-}
+}*/
 ?>
