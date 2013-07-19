@@ -3,8 +3,8 @@
 Plugin Name: Who Hit The Page - Hit Counter
 Plugin URI: http://3pxwebstudios.co.nf/wordpress-resources/who-hit-the-page-hit-counter
 Description: Who Hit The Page - Hit Counter lets you know who hit your page by adding an invisible page hit counter on your website, so you know how many times a page has been visited and also know the IP addresses of your visitors. This plugin will also register the visitor's browser type. Place <code>[whohit]-Page name or identifier-[/whohit]</code> on any page to count visitors of that page.
-Version: 1.0
-Author: Lindeni Mahlalela
+Version: 1.3
+Author: mahlamusa
 Author URI: http://3pxwebstudios.co.nf
 License: GPL
 */
@@ -32,6 +32,7 @@ register_activation_hook(__FILE__,'whtp_installer');
 register_deactivation_hook(__FILE__,'whtp_remove');
 
 include('count_who_hit.php');
+include('who_hit_processor.php');
 
 function whtp_installer(){
 	require_once('install_who_hit.php');
@@ -39,38 +40,34 @@ function whtp_installer(){
 function whtp_remove(){
 	require_once('uninstall_who_hit.php');
 }
-
-
 /*
-*
+* If current user is administrator, then add the menus and actions
 *
 */
 if (is_admin()){
-	function whtp_admin_menu(){
-		add_object_page( 'Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');
-		
+	function whtp_admin_menu(){		
+		$icon_uri = plugins_url("images/icon.png");
+		add_object_page( 'Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');	
+		add_submenu_page('whtp-admin-menu','Denied IPs','Denied IPs','administrator','whtp-admin-meu','whtp_denied_submenu_callback');	
 		//add_management_page('Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');
 	}
-	add_action('admin_menu','whtp_admin_menu');
-	
-	
+	add_action('admin_menu','whtp_admin_menu');	
 	/*
 	* Submenu callback functions
 	*/
-	
 	function whtp_object_page_callback(){
 		include('view_who_hit.php');
-	}	
+	}
+	function whtp_denied_submenu_callback(){
+		include('who_hit_denied_ips.php'); //admin page
+	}
 }
 /*
 * Hit counter short code
-* add [wphitcounter]Page name or title[/wphitcounter] to the page you want visitors counted
+* add [whohit]Page name or title[/whohit] to the page you want visitors counted
 */
-
-
 function who_hit_the_page_short_code( $atts=null, $content=null ){
 	extract(shortcode_atts(array('id'=>''),$atts));
-	
 	if ( $content != ""){
 		$page = $content;
 	}
@@ -86,4 +83,11 @@ function whtp_link_bank(){
 	return $link;
 }
 add_shortcode('whlinkback','whtp_link_bank');
+/*
+* admin Menus
+*/
+function whtp_admin_styles(){
+	echo '<link rel="stylesheet" href="' . plugins_url ( 'style_who_hit.css', __FILE__ ) . '" />';
+}
+add_action( 'admin_head', 'whtp_admin_styles' );
 ?>
