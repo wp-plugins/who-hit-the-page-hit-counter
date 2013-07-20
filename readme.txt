@@ -62,6 +62,12 @@ If you know the IP address of your own devices like Home/Work Computer, you can 
 6. Screenshot-6.jpg - Shows information and support links and an update subsrciption form
 
 == Changelog ==
+
+= 1.3.2 =
+
+* Bug fix
+* Attempt to recover page hits and hit info from the installation of version 1.0 - data not truly lost from upgrade
+
 = 1.3.1 =
 
 * Fixed the counter bug - counters must work now

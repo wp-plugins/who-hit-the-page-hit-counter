@@ -20,13 +20,8 @@ create_whtp_hitinfo_table();
 * this is for the old V1.0, essential to rename the tables
 * alternatively, manually rename table `hits` to `whtp_hits`
 */
-if ( whtp_table_exists( "hits" ) ){
+if ( whtp_table_exists("hits") ){
 	if ( whtp_table_exists( "whtp_hits" ) ) {
-		whtp_export_hits();
-	}
-	else{
-		#create table if not exist
-		create_whtp_hits_table();
 		whtp_export_hits();
 	}
 }
@@ -39,11 +34,6 @@ if ( whtp_table_exists( "hitinfo" ) ) {
 	if ( whtp_table_exists( "whtp_hitinfo" ) ){
 		whtp_export_hitinfo();
 	}
-	else{
-		#create table if not exist
-		create_whtp_hitinfo_table();
-		whtp_export_hitinfo();
-	}
 }
 
 /*
@@ -53,7 +43,7 @@ if ( whtp_table_exists( "hitinfo" ) ) {
 
 # create hits table
 function create_whtp_hits_table(){
-	$create_hits_tbl = mysql_query("CREATE TABLE IF NOT EXISTS whtp_hits(page char(100),PRIMARY KEY(page),count int(15))");
+	$create_hits_tbl = mysql_query("CREATE TABLE IF NOT EXISTS whtp_hits(page char(100) NOT NULL DEFAULT 'No Identifier',PRIMARY KEY(page),count int(15) DEFAULT 0)");
 	if (!$create_hits_tbl)
 	{
 		//die("Could create table Information table.");
@@ -92,22 +82,20 @@ function whtp_table_exists ( $tablename ){
 
 # export hits data to whtp_hits
 function whtp_export_hits(){
-	$select = mysql_query("SELECT * FROM hits");
+	$select = mysql_query("SELECT * FROM `hits`");
 	if ( $select ){
 		$message = "";
-		$exported=false;
-		while ( $row = mysql_fetch_assoc( $select ) ){
-			$insert = "INSERT into whtp_hits('page','count') VALUES ('" . $row['page']. "','" .$row['count']. "')";
-			if( !mysql_query( $insert ) ){
-				$message.= "Error Inserting row + " . $row['id'];
+		$exported = false;
+		while ( $row = mysql_fetch_assoc( $select ) ){			
+			$insert = mysql_query("INSERT into `whtp_hits`(`page`,`count`) VALUES ('" . $row['page']. "','" .$row['count']. "')");
+			if( !$insert  ){
 				$exported = false;
-				
 			}else{
 				$exported = true;
 			}
 		}
-		if ( $message =="" && $exported == true) {
-			mysql_query("DROP TABLE IF EXISTS hits");
+		if ($exported == true) {
+			mysql_query("DROP TABLE IF EXISTS `hits`");
 		}
 	}
 }
@@ -123,15 +111,14 @@ function whtp_export_hitinfo(){
 			VALUES ('" .$row['ip_address'] ."', 'active', '" .$row['user_agent']."', '" .$row['datetime']."', '" .$row['datetime'] ."')";		
 			$insert = mysql_query ( $sql );
 			if ( !$insert ){
-				$message .= "Error Inserting row + " . $row['id'];
 				$exported = false;
 			}
 			else{
 				$exported = true;
 			}
 		}
-		if ( $message =="" && $exported == true) {
-			mysql_query("DROP TABLE IF EXISTS hitinfo");
+		if ($exported == true) {
+			mysql_query("DROP TABLE IF EXISTS `hitinfo`");
 		}
 	}
 }

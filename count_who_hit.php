@@ -14,22 +14,13 @@ function who_hit_the_page( $page ) {
 	
 	#count if the IP is not denied
 	if ( !ip_is_denied ( $ip_address ) ) {
+		
+		whtp_count_hits( $page );
+		whtp_hit_info();		
 		# try detecting wordpress host, then deny it
-		if ( !deny_wordpress_host_ip() ){
-			whtp_count_hits( $page );
-			whtp_hit_info();
-		}
-	}
-	/*
-	* Future functionality
-	*
-	* Collapse or expand all IP details
-	* Geolocate IP address
-	* User IP address and all browsers used
-	*
-	*
-	* Divide IP's Total Hits to the number of browsers associated to that IP	
-	*/
+		# removed feature because it seems to work diferently on diferent hosts
+		//if ( deny_wordpress_host_ip() ){} 
+	}	
 }
 
 /*
@@ -45,6 +36,7 @@ function whtp_count_hits( $page ){
 	}
 }
 
+# reset page counts
 function whtp_reset_page_count( $page = ""){
 	
 	if ( $page == ""){
@@ -182,11 +174,78 @@ function whtp_hit_info(){
 	}
 }
 
+
+
+# check if an IP is denied
+function ip_is_denied ( $ip_address ){
+	$denied_result	= mysql_query("SELECT * FROM whtp_hitinfo WHERE ip_status='denied' AND ip_address='$ip_address' LIMIT 1");
+	
+	if ( $denied_result ){
+		if ( mysql_num_rows ( $denied_result ) == 1 ){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else{
+		//echo mysql_error();
+		return false;	
+	}
+}
+
+# set an IP's status as denied
+function whtp_deny_ip(){
+	$ip_address = stripslashes( $_POST['ip_address'] );
+	
+	$allow = mysql_query( "UPDATE `whtp_hitinfo` SET `ip_status` = 'denied' WHERE ip_address='$ip_address'" );
+	
+	if ( $allow ) {
+		echo '<div class="success-msg">Denied . The IP "' . $ip_address . '" has been denied and will not be counted the next time it visits your website.</div>';
+	}else{
+		echo '<div class="error-msg">Failed to Deny "' . $ip_address . '" ' .mysql_error() . ' </div>';
+	}
+}
+/*
+* Discount a page's counter by -1
+*
+*/
+function whtp_discount_page(){
+	$page = stripslashes( $_POST['discount_page'] );
+	$discount_page = mysql_query(	"UPDATE whtp_hits SET count = count-1 WHERE page = '$page'"	);
+	
+	if ( $discount_page ) {
+		echo '<div class="success-msg"><p>Discounted</b> . The Page "' . $page . '" has been discounted by (1). If you have visited the page more than once, then continue to Discount yourself on this page, otherwise Discount yourself on other pages you have visited</div>';
+	}else{
+		echo '<div class="error-msg">Failed to Discount on the page "' . $page . '" ' .mysql_error() . ' </div>';
+	}
+}
+
+
+# updates signup form
+function whtp_signup_form(){?>
+<form action="" method="post" id="signup">
+    <input type="hidden" name="whtpsubscr" value="y" />
+    <label for="asubscribe_email">Enter your email address to subscribe to updates</label>
+    <input type="email" placeholder="e.g. <?php echo get_option('admin_email'); ?>" name="asubscribe_email" value="" /><br />
+    <input type="submit" value="Subscribe to updates" class="button-primary"/>
+</form>
+<?php }
+/*
+* Future functionality
+* Collapse or expand all IP details
+* Geolocate IP address
+* User IP address and all browsers used
+* Divide IP's Total Hits to the number of browsers associated to that IP	
+*/
+
 /*
 * detect wordpress install host
 * if host is the same as referrer, or host is the site url, we deny
 * The host or developer's IP is not counted
 */
+
+# this is function seems to work diferently on diferent hosts
 function deny_wordpress_host_ip(){
 	
 	$local 		= $_SERVER['HTTP_HOST'];	# this host's name
@@ -234,59 +293,4 @@ function deny_wordpress_host_ip(){
 	}
 	return $deny;
 }
-
-# check if an IP is denied
-function ip_is_denied ( $ip_address ){
-	$denied_result	= mysql_query("SELECT * FROM whtp_hitinfo WHERE ip_status='denied' AND ip_address='$ip_address' LIMIT 1");
-	
-	if ( $denied_result ){
-		if ( mysql_num_rows ( $denied_result ) == 1 ){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else{
-		echo mysql_error();
-		return false;	
-	}
-}
-
-# set an IP's status as denied
-function whtp_deny_ip(){
-	$ip_address = stripslashes( $_POST['ip_address'] );
-	
-	$allow = mysql_query( "UPDATE `whtp_hitinfo` SET `ip_status` = 'denied' WHERE ip_address='$ip_address'" );
-	
-	if ( $allow ) {
-		echo '<div class="success-msg">Denied . The IP "' . $ip_address . '" has been denied and will not be counted the next time it visits your website.</div>';
-	}else{
-		echo '<div class="error-msg">Failed to Deny "' . $ip_address . '" ' .mysql_error() . ' </div>';
-	}
-}
-/*
-* Discount a page's counter by -1
-*
-*/
-function whtp_discount_page(){
-	$page = stripslashes( $_POST['discount_page'] );
-	$discount_page = mysql_query(	"UPDATE whtp_hits SET count = count-1 WHERE page = '$page'"	);
-	
-	if ( $discount_page ) {
-		echo '<div class="success-msg"><p>Discounted</b> . The Page "' . $page . '" has been discounted by (1). If you have visited the page more than once, then continue to Discount yourself on this page, otherwise Discount yourself on other pages you have visited</div>';
-	}else{
-		echo '<div class="error-msg">Failed to Discount on the page "' . $page . '" ' .mysql_error() . ' </div>';
-	}
-}
-
-# updates signup form
-function whtp_signup_form(){?>
-<form action="" method="post" id="signup">
-    <input type="hidden" name="whtpsubscr" value="y" />
-    <label for="asubscribe_email">Enter your email address to subscribe to updates</label>
-    <input type="email" placeholder="e.g. <?php echo get_option('admin_email'); ?>" name="asubscribe_email" value="" /><br />
-    <input type="submit" value="Subscribe to updates" class="button-primary"/>
-</form>
-<?php }
 ?>
