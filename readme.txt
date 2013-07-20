@@ -4,7 +4,7 @@ Donate link: http://example.com/
 Tags: hit counter, visit counter, visitor stats, ip statistics, statistics, ip counter, browser detector
 Requires at least: 2.0.2
 Tested up to: 3.5.1
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ If you know the IP address of your own devices like Home/Work Computer, you can 
 6. Screenshot-6.jpg - Shows information and support links and an update subsrciption form
 
 == Changelog ==
+= 1.3.1 =
+
+* Fixed the counter bug - counters must work now
 
 = 1.3 =
 
