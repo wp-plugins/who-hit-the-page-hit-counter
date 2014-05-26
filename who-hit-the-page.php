@@ -27,12 +27,15 @@ License: GPL
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
  
- 
+include('count_who_hit.php');
+include('who_hit_processor.php');
+include('who_hit_functions.php'); 
+
+
 register_activation_hook(__FILE__,'whtp_installer');
 register_deactivation_hook(__FILE__,'whtp_remove');
 
-include('count_who_hit.php');
-include('who_hit_processor.php');
+
 
 function whtp_installer(){
 	require_once('install_who_hit.php');
@@ -48,7 +51,12 @@ if (is_admin()){
 	function whtp_admin_menu(){		
 		$icon_uri = plugins_url("images/icon.png");
 		add_object_page( 'Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');	
-		add_submenu_page('whtp-admin-menu','Denied IPs','Denied IPs','administrator','whtp-admin-meu','whtp_denied_submenu_callback');	
+		add_submenu_page('whtp-admin-menu','View All Details','View All Details','administrator','whtp-view-all','whtp_view_all_callback');
+		add_submenu_page('whtp-admin-menu','Visitor Stats','Visitor Stats','administrator','whtp-visitor-stats','whtp_visitors_stats_callback');
+		add_submenu_page('whtp-admin-menu','Denied IPs','Denied IPs','administrator','whtp-denied-ips','whtp_denied_submenu_callback');
+		add_submenu_page('whtp-admin-menu','Export / Import','Export / Import','administrator','whtp-import-export','whtp_export_import_submenu_callback');
+		add_submenu_page('whtp-admin-menu','Settings','Settings','administrator','whtp-settings','whtp_settings_submenu_callback');
+		add_submenu_page('whtp-admin-menu','Help','Help','administrator','whtp-help','whtp_help_submenu_callback');
 		//add_management_page('Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');
 	}
 	add_action('admin_menu','whtp_admin_menu');	
@@ -56,10 +64,26 @@ if (is_admin()){
 	* Submenu callback functions
 	*/
 	function whtp_object_page_callback(){
-		include('view_who_hit.php');
+		include('who_hit_stats_summary.php');
 	}
 	function whtp_denied_submenu_callback(){
 		include('who_hit_denied_ips.php'); //admin page
+	}
+	
+	function whtp_visitors_stats_callback(){
+		include('view_visitor_info.php'); //admin page
+	}
+	function whtp_view_all_callback(){
+		 include('view_who_hit.php');//admin page
+	}
+	function whtp_export_import_submenu_callback(){
+		 include('who_hit_export_import.php');//admin page
+	}
+	function whtp_settings_submenu_callback(){
+		 include('who_hit_settings.php');//admin page
+	}
+	function whtp_help_submenu_callback(){
+		 include('who_hit_help.php');//admin page
 	}
 }
 /*

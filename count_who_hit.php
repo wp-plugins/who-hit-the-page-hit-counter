@@ -7,35 +7,182 @@
 * so you will know which page has how many hits
 */
 
-function who_hit_the_page( $page ) {
-	
+function who_hit_the_page( $page ) {	
 	$page = $page;
 	$ip_address	= $_SERVER["REMOTE_ADDR"];	# visitor's ip address 
 	
 	#count if the IP is not denied
 	if ( !ip_is_denied ( $ip_address ) ) {
-		
+		$page = $page;
 		whtp_count_hits( $page );
-		whtp_hit_info();		
+		whtp_hit_info( $page );		
 		# try detecting wordpress host, then deny it
 		# removed feature because it seems to work diferently on diferent hosts
 		//if ( deny_wordpress_host_ip() ){} 
-	}	
+	}
 }
-
 /*
 * Check if the page has been visited then
 * update or create new counter
 */
-function whtp_count_hits( $page ){	
-	if(mysql_num_rows(mysql_query("SELECT page FROM whtp_hits WHERE page = '$page'")) > 0) {
-		$update_counter = mysql_query(	"UPDATE whtp_hits SET count = count+1 WHERE page = '$page'"	);
+function whtp_count_hits( $page ){
+	global $wpdb;
+	$page = $page;
+	
+	$ua = getBrowser(); //Get browser info
+	$browser = $ua['name'];
+		
+	$page = $wpdb->get_var("SELECT page FROM whtp_hits WHERE page = '$page' LIMIT 1");
+	
+	if ($page ){
+		$update = $wpdb->update("whtp_hits",array("count"=> "count+1"), array("page"=>$page),array("%d"),array("%s"));
+		if ( !browser_exists($browser) ){
+			add_browser($browser);
+		}
 	}
 	else {
-		$insert_new_count = mysql_query("INSERT INTO whtp_hits (page, count)VALUES ('$page', '1')");
+		$insert = $wpdb->insert("whtp_hits", array("page"=>$page,"count"=>1), array("%s", "%d"));
+		$page_id = $wpdb->insert_id;
+		$_SESSION['insert_page'] = $page_id;
+		
+		if ( !browser_exists($browser) ){
+			add_browser($browser);
+		}
 	}
 }
 
+/*
+* start gathering unique user data
+* and update the table
+*/
+function whtp_hit_info( $page ){
+	global $wpdb;
+	$page = $page;
+	
+	$ip_address			= $_SERVER["REMOTE_ADDR"];	# visitor's ip address
+	$date_ftime 		= date("Y/m/d") . ' ' . date('H:i:s'); # visitor's first visit
+	$date_ltime			= date("Y/m/d") . ' ' . date('H:i:s'); # visitor's last visit
+	
+	$ua = getBrowser(); //Get browser info
+	$browser = $ua['name'];
+	
+	$page_id = get_page_id( $page );
+	/*
+	* first check if the IP is in database
+	* if the ip is not in the database, add it in
+	* otherwise update
+	*/
+	
+	$ip  =  $wpdb->get_var( "SELECT ip_address FROM whtp_hitinfo WHERE ip_address = '$ip_address'" );
+	if ( !$ip || "" != $ip){	
+		$insert_hit_info = $wpdb->insert("whtp_hitinfo", array("ip_address"=>$ip_address,"ip_total_visits"=>1,"user_agent"=>$browser,"datetime_first_visit"=>$date_ftime,"datetime_last_visit"=>$date_ltime), array("%s", "%d", "%s", "%s", "%s"));
+			
+			
+		//insert other information
+		$ip_id = $wpdb->insert_id;						
+		$ua_id = get_agent_id($browser);
+		$page_id = get_page_id ( $page );
+		
+		if ( !browser_exists($browser) ){
+			add_browser($browser);
+		}
+		ip_hit($ip_id,$page_id,$date_ftime,$ua_id); //insert new hit			
+	}
+	else{
+		$update_ip_visit = $wpdb->update( "whtp_hitinfo", array("ip_total_visits"=>"ip_total_visits+1", "user_agent"=>$browser, "datetime_last_visit"=>$date_ltime), array("ip_address"=>$ip_address), array("%d","%s","%s"));
+		
+		$ua_id = get_agent_id($browser);
+		$ip_id = get_ip_id($ip_address);
+		$page_id = get_page_id ( $page );
+		
+		if ( !browser_exists($browser) ){
+			add_browser($browser);
+		}
+		ip_hit($ip_id,$page_id,$date_ftime,$ua_id); //always insert new hit
+	}
+	
+	
+	// get the country code corresponding to the visitor's IP
+	$country_code = get_country_code( $ip_address );
+	country_count( $country_code );
+}
+
+
+/*
+*	Count country's visits
+*/
+function get_country_code( $visitor_ip ){
+	global $wpdb;
+	$select_country_code = "SELECT country_code FROM whtp_ip2location WHERE INET_ATON('" . $visitor_ip . "') 
+                    BETWEEN decimal_ip_from AND decimal_ip_to LIMIT 1";                    
+    $country_code = $wpdb->get_var($select_country_code);
+	
+	if ( $country_code ){		
+		return $country_code;
+	}	
+	else return "";
+}
+
+function country_count( $country_code ){	
+	global $wpdb;
+	$code = $wpdb->get_var("SELECT country_code FROM whtp_visiting_countries WHERE country_code = '$country_code'");
+	
+	if ( $code ) {	
+		$wpdb->update("whtp_visiting_countriess", array("count"=>"count+1"), array("country_code"=> $country_code), array("%d"), array("%s"));	
+	}
+	else {
+		if ( $code != ""){
+			$wpdb->insert( "whtp_visiting_countries", array("country_code"=>$country_code, "count"=>1));
+		}
+	}
+}
+
+/*
+*	Get agent id
+*/
+function get_agent_id($browser){
+	global $wpdb;
+	$ua_id = $wpdb->get_var("SELECT agent_id FROM whtp_user_agents WHERE agent_name = '$browser' LIMIT 1");
+	if ( $ua_id ){
+		return $ua_id;
+	}
+	else{
+		return "Unknown Browser";	
+	}
+}
+
+function get_ip_id( $ip_address ){
+	global $wpdb;
+	$ip_id  = $wpdb->get_var("SELECT id FROM whtp_hitinfo WHERE ip_address='$ip_address' LIMIT 1");			
+	if ($ip_id){
+		return $ip_id;
+	}
+}
+
+function browser_exists($browser){
+	global $wpdb;
+	$browser = $wpdb->get_var("SELECT agent_name FROM whtp_user_agents WHERE agent_name='$browser' LIMIT 1" );
+	if ($browser){
+		return true;
+	}
+	else return false;
+}
+
+function add_browser($browser, $details=""){
+	global $wpdb;
+	$$wpdb->insert("whtp_user_agents", array("agent_name"=>$browser, "agent_details"=>$details), array("%s", "%s") );	
+}
+
+function ip_hit($ip_id,$page_id,$date_ftime,$ua_id){
+	global $wpdb;
+	$wpdb->insert( "whtp_ip_hits", array("ip_id"=>$ip_id,"page_id"=>$page_id,"datetime_first_visit"=>$date_ftime,"browser_id"=>$ua_id), array("%d","%d","%s","%d") );	
+}
+
+function get_page_id ( $page ){
+	global $wpdb;
+	$page_id  = $wpdb->get_var("SELECT page_id FROM whtp_hits WHERE page='$page' LIMIT 1");
+	return $page_id;
+}
 # reset page counts
 function whtp_reset_page_count( $page = ""){
 	
@@ -67,7 +214,7 @@ function whtp_reset_page_count( $page = ""){
 
 # reset ip counters
 function whtp_reset_ip_info( $reset = ""){	
-
+	global $wpdb;
 	$ip_address = $_POST['ip_address'];	
 	if ($reset == ""){
 		$reset_ip = stripslashes( $_POST['reset_ip'] );
@@ -76,22 +223,22 @@ function whtp_reset_ip_info( $reset = ""){
 	}
 	if ($reset_ip != "all" ){
 		# reset specific
-		$reset_ip_visit = mysql_query( "UPDATE whtp_hitinfo SET ip_total_visits = 0 WHERE ip_address='$ip_address'" );
-		if ( $reset_ip_visit ) {
+		$reset=$wpdb->update("whtp_hitinfo", array("ip_total_visits"=>0),array("ip_address"=>$ip_address), array("%d"), array("%s"));
+		if ( $reset ) {
 			echo '<div class="success-msg">The count for ip address: ' . $ip_address . ' has been reset successfully.</div>';
 		}
 		else{
-			echo '<div class="error-msg">Failed to reset count for IP: ' . $ip_address  . mysql_error() . '</div>';
+			echo '<div class="error-msg">Failed to reset count for IP: ' . $ip_address  .'</div>';
 		}
 	}
 	elseif($reset_ip == "all" ){
 		# reset all ip counters
-		$reset_all = mysql_query( "UPDATE whtp_hitinfo SET ip_total_visits = 0" );
+		$reset_all = $wpdb->update( "whtp_hitinfo",array("ip_total_visits"=>0), array("%d"));
 		if ( $reset_all ) {
 			echo '<div class="success-msg">The count for "All" IPs has been reset successfully.</div>';
 		}
 		else{
-			echo '<div class="error-msg">Failed to reset count for "All" IPs' . mysql_error() . '</div>';
+			echo '<div class="error-msg">Failed to reset count for "All" IPs.</div>';
 		}
 	}
 	$_POST['ip_address'] = "";
@@ -99,24 +246,24 @@ function whtp_reset_ip_info( $reset = ""){
 
 # delete ip address
 function whtp_delete_ip (){
-	
+	global $wpdb;
 	$ip_address = stripslashes($_POST['delete_this_ip']);	
 	$delete_ip = stripslashes ( $_POST['delete_ip'] );
 	
 	if ( $delete_ip == "this_ip" ) {
-		$del = mysql_query ("DELETE FROM whtp_hitinfo WHERE ip_address='$ip_address'");
+		$del = $wpdb->query ("DELETE FROM whtp_hitinfo WHERE ip_address='$ip_address'");
 		if ( $del ){
 			echo '<div class="success-msg">The IP address ' . $ip_address . ' has been removed from the database</div>';
 		}else{
-			echo '<div class="error-msg">Failed to remove IP from database : ' . mysql_error() . '</div>';
+			echo '<div class="error-msg">Failed to remove IP from database.</div>';
 		}
 	}
 	elseif ( $delete_ip == "all" ){
-		$del = mysql_query ("DELETE FROM whtp_hitinfo");
+		$del = $wpdb->query("DELETE FROM whtp_hitinfo");
 		if ( $del ){
 			echo '<div class="success-msg">All IP addresses have been removed from the database</div>';
 		}else{
-			echo '<div class="error-msg">Failed to remove IP addresses from database : ' . mysql_error() . '</div>';
+			echo '<div class="error-msg">Failed to remove IP addresses from database.</div>';
 		}	
 	}
 	$_POST['delete_this_ip'] = "";
@@ -124,13 +271,13 @@ function whtp_delete_ip (){
 
 # delete page
 function whtp_delete_page( $delete_page = ""){
-	
+	global $wpdb;
 	if ($delete_page == ""){
 		$delete_page = stripslashes( $_POST['delete_page'] );
 	}
 	
 	if ( $delete_page != "all" ){
-		$del = mysql_query ("DELETE FROM whtp_hits WHERE page='$delete_page'");
+		$del = $wpdb->query ("DELETE FROM whtp_hits WHERE page='$delete_page'");
 		if ( $del ){
 			echo '<div class="success-msg">The page "' . $delete_page . '" has been deleted from your page counters records.</div>';
 		}else{
@@ -138,38 +285,11 @@ function whtp_delete_page( $delete_page = ""){
 		}
 	}
 	else{
-		$del = mysql_query ("DELETE FROM whtp_hits");
+		$del = $wpdb->query("DELETE FROM whtp_hits");
 		if ( $del ){
 			echo '<div class="success-msg">All page counts have been deleted from the hit counter table. New entries will be made when users visit your pages again. If you no longer wish to count visits on certain pages, go to the page editor and remove the [whohit]..[/whohit] shortcode. If you don\'t want to see this table, click "Delete All" to remove the pages.</div>';
 		}else{
 			echo '<div class="error-msg">Failed to remove page counts.</div>';
-		}
-	}
-}
-/*
-* start gathering unique user data
-* and update the table
-*/
-function whtp_hit_info(){
-	
-	$ip_address			= $_SERVER["REMOTE_ADDR"];	# visitor's ip address
-	$user_agent 		= $_SERVER["HTTP_USER_AGENT"]; # visitor's user agent
-	$date_ftime 		= date("Y/m/d") . ' ' . date('H:i:s'); # visitor's first visit
-	$date_ltime			= date("Y/m/d") . ' ' . date('H:i:s'); # visitor's last visit
-	
-	/*
-	* first check if the IP is in database
-	* if the ip is not in the database, add it in
-	* otherwise update
-	*/
-	
-	$query  =  mysql_query( "SELECT ip_address FROM whtp_hitinfo WHERE ip_address = '$ip_address'" );
-	if ( $query ){	
-		if( !mysql_num_rows( $query ) ) {
-			$insert_hit_info = mysql_query("INSERT INTO whtp_hitinfo (ip_address, ip_total_visits, user_agent, datetime_first_visit, datetime_last_visit) VALUES('$ip_address' , 1, '$user_agent','$date_ftime','$date_ltime' )");
-		}
-		else{
-			$update_ip_visit = mysql_query( "UPDATE whtp_hitinfo SET ip_total_visits = ip_total_visits+1, user_agent='$user_agent', datetime_last_visit = '$date_ltime' WHERE ip_address='$ip_address'" );
 		}
 	}
 }
@@ -178,15 +298,11 @@ function whtp_hit_info(){
 
 # check if an IP is denied
 function ip_is_denied ( $ip_address ){
-	$denied_result	= mysql_query("SELECT * FROM whtp_hitinfo WHERE ip_status='denied' AND ip_address='$ip_address' LIMIT 1");
+	global $wpdb;
+	$denied_ip	= $wpdb->get_var("SELECT ip_address FROM whtp_hitinfo WHERE ip_status='denied' AND ip_address='$ip_address' LIMIT 1");
 	
-	if ( $denied_result ){
-		if ( mysql_num_rows ( $denied_result ) == 1 ){
-			return true;
-		}
-		else {
-			return false;
-		}
+	if ( $denied_ip && $denied_ip != "" ){
+		return true;
 	}
 	else{
 		//echo mysql_error();
@@ -196,14 +312,15 @@ function ip_is_denied ( $ip_address ){
 
 # set an IP's status as denied
 function whtp_deny_ip(){
+	global $wpdb;
 	$ip_address = stripslashes( $_POST['ip_address'] );
 	
-	$allow = mysql_query( "UPDATE `whtp_hitinfo` SET `ip_status` = 'denied' WHERE ip_address='$ip_address'" );
+	$deny = $wpdb->update("whtp_hitinfo", array("ip_status"=>"denied"), array("ip_address"=>$ip_address), array("%s"), array("%s"));
 	
-	if ( $allow ) {
+	if ( $deny ) {
 		echo '<div class="success-msg">Denied . The IP "' . $ip_address . '" has been denied and will not be counted the next time it visits your website.</div>';
 	}else{
-		echo '<div class="error-msg">Failed to Deny "' . $ip_address . '" ' .mysql_error() . ' </div>';
+		echo '<div class="error-msg">Failed to Deny "' . $ip_address . '" </div>';
 	}
 }
 /*
@@ -211,13 +328,15 @@ function whtp_deny_ip(){
 *
 */
 function whtp_discount_page(){
+	global $wpdb;
 	$page = stripslashes( $_POST['discount_page'] );
-	$discount_page = mysql_query(	"UPDATE whtp_hits SET count = count-1 WHERE page = '$page'"	);
+	$discountby = stripslashes( $_POST['discountby'] );
+	$discount_page = $wpdb->update("whtp_hits", array("count"=>"count-$discountby"), array("page"=>$page));
 	
 	if ( $discount_page ) {
 		echo '<div class="success-msg"><p>Discounted</b> . The Page "' . $page . '" has been discounted by (1). If you have visited the page more than once, then continue to Discount yourself on this page, otherwise Discount yourself on other pages you have visited</div>';
 	}else{
-		echo '<div class="error-msg">Failed to Discount on the page "' . $page . '" ' .mysql_error() . ' </div>';
+		echo '<div class="error-msg">Failed to Discount on the page "' . $page . '."</div>';
 	}
 }
 
@@ -231,6 +350,100 @@ function whtp_signup_form(){?>
     <input type="submit" value="Subscribe to updates" class="button-primary"/>
 </form>
 <?php }
+
+
+
+function getBrowser($u_agent = "")
+{
+	if ( $u_agent == "" ){
+    	$u_agent = $_SERVER['HTTP_USER_AGENT'];
+	}
+	else {
+		$u_agent = $u_agent;	
+	}
+    $bname = 'Unknown';
+    $platform = 'Unknown';
+    $version= "";
+
+    //First get the platform?
+    if (preg_match('/linux/i', $u_agent)) {
+        $platform = 'linux';
+    }
+    elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+        $platform = 'mac';
+    }
+    elseif (preg_match('/windows|win32/i', $u_agent)) {
+        $platform = 'windows';
+    }
+
+    // Next get the name of the useragent yes seperately and for good reason
+    if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
+    {
+        $bname = 'Internet Explorer';
+        $ub = "MSIE";
+    }
+    elseif(preg_match('/Firefox/i',$u_agent))
+    {
+        $bname = 'Mozilla Firefox';
+        $ub = "Firefox";
+    }
+    elseif(preg_match('/Chrome/i',$u_agent))
+    {
+        $bname = 'Google Chrome';
+        $ub = "Chrome";
+    }
+    elseif(preg_match('/Safari/i',$u_agent))
+    {
+        $bname = 'Apple Safari';
+        $ub = "Safari";
+    }
+    elseif(preg_match('/Opera/i',$u_agent))
+    {
+        $bname = 'Opera';
+        $ub = "Opera";
+    }
+    elseif(preg_match('/Netscape/i',$u_agent))
+    {
+        $bname = 'Netscape';
+        $ub = "Netscape";
+    }
+
+    // finally get the correct version number
+    $known = array('Version', $ub, 'other');
+    $pattern = '#(?<browser>' . join('|', $known) .
+    ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+    if (!preg_match_all($pattern, $u_agent, $matches)) {
+        // we have no matching number just continue
+    }
+
+    // see how many we have
+    $i = count($matches['browser']);
+    if ($i != 1) {
+        //we will have two since we are not using 'other' argument yet
+        //see if version is before or after the name
+        if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
+            $version= $matches['version'][0];
+        }
+        else {
+            $version= $matches['version'][1];
+        }
+    }
+    else {
+        $version= $matches['version'][0];
+    }
+
+    // check if we have a number
+    if ($version==null || $version=="") {$version="?";}
+
+    return array(
+        'userAgent' => $u_agent,
+        'name'      => $bname,
+        'version'   => $version,
+        'platform'  => $platform,
+        'pattern'    => $pattern
+    );
+}
+
 /*
 * Future functionality
 * Collapse or expand all IP details
