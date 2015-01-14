@@ -3,7 +3,7 @@
 Plugin Name: Who Hit The Page - Hit Counter
 Plugin URI: http://3pxwebstudios.co.nf/wordpress-resources/who-hit-the-page-hit-counter
 Description: Who Hit The Page - Hit Counter lets you know who hit your page by adding an invisible page hit counter on your website, so you know how many times a page has been visited and also know the IP addresses of your visitors. This plugin will also register the visitor's browser type. Place <code>[whohit]-Page name or identifier-[/whohit]</code> on any page to count visitors of that page.
-Version: 1.3.2
+Version: 1.4.0
 Author: mahlamusa
 Author URI: http://3pxwebstudios.co.nf
 License: GPL
