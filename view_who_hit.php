@@ -1,9 +1,65 @@
-<div class="wrap">
-	<h1>Who Hit The Page - Hit Counter</h1>
-	<p>Here you will see the raw hit counter information. This page lists all your pages and their respective counts and also the visiting IP addresses with their respective counts and other information.</p>
-</div>
+<div class="wrap">	
+	<h2>Who Hit The Page Hit Counter</h2>
+    <p>Here you will see the raw hit counter information. This page lists all your pages and their respective counts and also the visiting IP addresses with their respective counts and other information.</p>
+    <div id="poststuff" class="metabox-holder has-right-sidebar">
+        <div id="side-info-column" class="inner-sidebar">
+            <div id="side-sortables" class="meta-box-sortables ui-sortable">
+                <div class="postbox">
+                    <div class="handlediv" title="Click to toggle"><br /></div>
+                    <h3 class="hndle">Support</h3>
+                    <div class="inside welcome-panel-column welcome-panel-last">
+                        <h4>Donate via PayPal</h4>
+                        <p>Any Amount is highly Appreciated</p>
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="3CL75HTEMYZW4">
+							<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+							<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+						</form>
+                    </div>  
+                </div>
+                <div class="postbox">
+                    <div class="handlediv" title="Click to toggle"><br /></div>
+                    <h3 class="hndle">Subscribe to updates</h3>
+                    <div class="inside welcome-panel-column welcome-panel-last">
+					   <?php
+                            if(isset($_POST['whtpsubscr']) && $_POST['whtpsubscr'] == "y"){
+                                whtp_admin_message_sender();
+                            }
+                            whtp_signup_form();
+                        ?>
+                        <p>Thank you once again!</p>
+                    </div>
+                </div>
+                
+                <div class="postbox">
+                    <div class="handlediv" title="Click to toggle"><br /></div>
+                    <h3 class="hndle">Please Rate this plugin</h3>
+                    <div class="inside welcome-panel-column welcome-panel-last">
+                        <p><b>Dear User</b></p>
+                        <p>Please 
+                        <a href="http://wordpress.org/support/view/plugin-reviews/who-hit-the-page-hit-counter">Rate this plugin now.</a> if you appreciate it.
+                        Rating this plugin will help other people like you to find this plugin because on wordpress plugins are sorted by rating, so rate it high and give it a fair review to help others find it.<br />
+                        </p>
+                        <div class="welcome-panel-column">
+                            <h3>Credits Where They Belong</h3>
+                            <div>
+                                This product includes GeoLite2 data created by MaxMind, available from
+                                <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="post-body">
+            <div id="post-body-content">
+                <div id="normal-sortables" class="meta-box-sortables ui-sortable">
+                    <div class="postbox inside">
+                    	<div class="handlediv" title="Click to toggle"><br /></div>
+                    	<h3 class="hndle">Pages visited and number of visits per page.</h3>
+                        <div class="inside">
 <?php
-
 //important
 if (is_admin() ) {
 	?>  
@@ -49,27 +105,29 @@ if (is_admin() ) {
 		$count = count( $hits );
 		if ( $count  > 0 ){
 			if( $total_hits > 0 ||$count > 0 ){		
-			echo '<div class="viewer wrap">' . "\n";
-			echo '<h2>Pages visited and number of visits per page.</h2>' . "\n";	
-				echo '<table class="hits" cellspacing="0" cellpadding="5px" width="98%">' . "\n";
-				echo $t1 .'<tr>' . "\n";
-				echo $t2 .'<td  class="title-footer first-col-title"><h4>Page Visited</h4></td>' . "\n";
-				echo $t2 .'<td  class="title-footer second-col-title"><h4>Number of Hits</h4></td>' . "\n";
-				echo $t2 .'<td  class="title-footer action-col-title"><h4>Discount By (-1)</h4></td>' . "\n";
-				echo $t2 .'<td  class="title-footer action-col-title"><h4>Reset</h4></td>' . "\n";
-				echo $t2 .'<td  class="title-footer action-col-title"><h4>Delete</h4></td>' . "\n";
-				echo $t1 .'</tr>' . "\n";
+			echo '<div class="wrap">
+					<div id="welcome-panel" class="welcome-panel">' . "\n";
+			echo '' . "\n";	
+			//table class=hits
+				echo '<table class="hits widefat fixed" cellspacing="0" cellpadding="5px" width="98%">' . "\n";
+				echo $t1 .'<thead>' . "\n";
+				echo $t2 .'<th  class="title-footer first-col-title">Page Visited</th>' . "\n";
+				echo $t2 .'<th  class="title-footer second-col-title">Number of Hits</th>' . "\n";
+				echo $t2 .'<th  class="title-footer action-col-title">Discount By</th>' . "\n";
+				echo $t2 .'<th  class="title-footer action-col-title">Reset</th>' . "\n";
+				echo $t2 .'<th  class="title-footer action-col-title">Delete</th>' . "\n";
+				echo $t1 .'</thead>' . "\n";
 					 
 				foreach($hits as  $row  )
 				{
 					echo $t1 .'<tr>' . "\n";
 					echo $t2 .'<td class="first-col">' . $row->page . '</td>' . "\n";
 					echo $t2 .'<td class="second-col">' .$row->count. '</td>' . "\n";	
-					echo $t2 .'<td class="action-col">'. "\n";						
+					echo $t2 .'<td class="action-col discount">'. "\n";						
 						echo $t3 .'<form action="" method="post">'. "\n";
 						echo $t4 .'<input type="hidden" name="discount_page" value="'. $row->page . '" />' . "\n";
 						echo $t4 .'<input type="number" name="discountby" value="1" />' . "\n";
-						echo $t4 .'<input type="submit" name="submit" value="Discount" class="button-primary" />' . "\n";
+						echo $t4 .'<input type="submit" name="submit" value="--" class="button-primary" />' . "\n";
 						echo $t3 .'</form>'. "\n";
 					echo $t2 .'</td>'. "\n";					
 					echo $t2 .'<td class="action-col">'. "\n";						
@@ -108,15 +166,27 @@ if (is_admin() ) {
 				echo $t2 .'</td>' . "\n";
 				echo $t1 .'</tr>' . "\n";
 				echo '</table>' . "\n";
-				echo '</div>' . "\n";
+				echo '</div></div>' . "\n";
 			}
 			else{
-				echo '<div class="viewer">' . "\n";
-				echo '<h4 class="not-found">No Page visits yet or the page counters have been reset. Read documentation to learn how to get started.</h4>' . "\n";
-				echo '</div>' . "\n";
+				?>
+				<div id="welcome-panel" class="welcome-panel">
+                    <h4 class="handle">No Data Found</h4>
+                    <p>No Page visits yet or the page counters have been reset. Read documentation to learn how to get started</p>
+                </div>          
+                <?php
 			}
 		}
 	}
+	?>
+    
+    					</div>
+                    </div>
+					<div class="postbox inside">
+                    	<h3 class="handle"><h2>Visitors' IP addresses and Information</h2></h3>
+                        <div class="inside">
+                        
+    <?php
 	/*
 	* get total unique IP addresses
 	* and print on table
@@ -157,21 +227,23 @@ if (is_admin() ) {
 			$hit_info = $wpdb->get_results("SELECT * FROM whtp_hitinfo WHERE ip_status='active' ORDER BY ip_total_visits DESC");  
 			$count_info = count ( $hit_info );
 			if( $count_info > 0 ){	
-			echo '<div class="viewer wrap">' . "\n";			
-			echo $t1 .'<h2> Visitors\' IP addresses and Information</h2>' . "\n";
-				echo $t1 .'<table class="ip-table table" cellspacing="0" cellpadding="5px" width="98%">' . "\n";
+			echo '<div class="wrap">
+						<div id="welcome-panel" class="welcome-panel">' . "\n";		
+				//table class="ip-table
+				echo $t1 .'<table class="ip-table widefat fixed table" cellspacing="0" cellpadding="5px" width="98%">' . "\n";
 				
 				# table headers
-				echo $t2 .'<tr>';
-				echo $t3 .'<td class="title-footer ip-title"><h4>Visitor\'s  IP Address</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer ipv-title"><h4>Visits</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer agent-title"><h4>User Agent</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer ftime-title"><h4>1st Visit</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer ltime-title"><h4>Last Visit</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer ipv-title"><h4>Deny / MisCount</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer ipv-title"><h4>Reset</h4></td>' . "\n";
-				echo $t3 .'<td class="title-footer ipv-title"><h4>Delete</h4></td>' . "\n";
-				echo $t2 .'</tr>'. "\n";
+				# td class="title-footer +
+				echo $t2 .'<thead>';
+				echo $t3 .'<th class="title-footer ip-title">Visitor\'s  IP</th>' . "\n";
+				echo $t3 .'<th class="title-footer ipv-title">Visits</th>' . "\n";
+				echo $t3 .'<th class="title-footer agent-title">User Agent</th>' . "\n";
+				echo $t3 .'<th class="title-footer ftime-title">1st Visit</th>' . "\n";
+				echo $t3 .'<th class="title-footer ltime-title">Last Visit</th>' . "\n";
+				echo $t3 .'<th class="title-footer ipv-title">Don\'t Count</th>' . "\n";
+				echo $t3 .'<th class="title-footer ipv-title">Reset</th>' . "\n";
+				echo $t3 .'<th class="title-footer ipv-title">Delete</th>' . "\n";
+				echo $t2 .'</thead>'. "\n";
 			 
 				# print rows from table
 				
@@ -237,28 +309,24 @@ if (is_admin() ) {
 				echo $t3 .'<td class="title-footer ipv-title"><h4>&nbsp;</h4></td>' . "\n";
 				echo $t2 .'</tr>' . "\n";
 				echo $t1 .'</table>' . "\n";
-				echo $t1 .'</div>' . "\n";
+				echo $t1 .'</div></div>' . "\n";
 			}
 		}
 		else{
 			# there are currently no visitors 
-			echo '<div class="viewer">' . "\n";
-			echo '<h4 class="not-found">There are currently no registered IP addresses, please read above to get started</h4>' . "\n";	
-			echo '</div>' . "\n";
+			?>
+            <div id="welcome-panel" class="welcome-panel">
+                <h4 class="not-found">There are currently no registered IP addresses, please read above to get started</h4>
+            </div>
+            <?php
 		}
-	}
-	
-	
-	/*
-	* Help and support links
-	* and subscription form
-	*/
-	
-	
-	# get started
-	
+	}	
 ?>
 <?php
 //end if is admin
 }
 ?>
+			</div>
+        </div>
+    </div>
+</div><!-- Wrap -->

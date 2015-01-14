@@ -29,8 +29,11 @@ License: GPL
  
 include('count_who_hit.php');
 include('who_hit_processor.php');
-include('who_hit_functions.php'); 
+include('who_hit_functions.php');
 
+if ( version_compare( $wp_version, '3.8', '<' ) ){
+	add_action( 'admin_head', 'whtp_compatibility_css' );
+}
 
 register_activation_hook(__FILE__,'whtp_installer');
 register_deactivation_hook(__FILE__,'whtp_remove');
@@ -114,4 +117,18 @@ function whtp_admin_styles(){
 	echo '<link rel="stylesheet" href="' . plugins_url ( 'style_who_hit.css', __FILE__ ) . '" />';
 }
 add_action( 'admin_head', 'whtp_admin_styles' );
+
+function whtp_compatibility_css(){
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/colors-rtl.min.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/colors.min.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/common-rtl.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/common.css', __FILE__ ).'" />';
+	echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/dashboard.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/dashboard-rtl.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/ie-rtl.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/ie.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/ie.min.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/wp-admin-rtl.min.css', __FILE__ ).'" />';
+	//echo '<link rel="stylesheet" href="'.plugins_url( 'wp-admin-css/wp-admin.min.css', __FILE__ ).'" />';
+}
 ?>

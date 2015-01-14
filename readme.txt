@@ -1,10 +1,12 @@
 === Who Hit The Page - Hit Counter ===
 Contributors: mahlamusa
-Donate link: http://example.com/
-Tags: hit counter, visit counter, visitor stats, ip statistics, statistics, ip counter, browser detector
-Requires at least: 2.0.2
-Tested up to: 3.5.1
-Stable tag: 1.3.2
+Donate link: http://whohit.co.za/donate/
+Author Uri: http://lindeni.co.za
+Plugin Uri: http://whohit.co.za/
+Tags: geolocation, geo location, hit counter, visit counter, visitor stats, ip statistics, statistics, ip counter, browser detector
+Requires at least: 3.5
+Tested up to: 4.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,12 +22,13 @@ This section describes how to install the plugin and get it working.
 
 1. Upload the folder/directory named `who-hit-the-page` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. 
+3. Go to "Export Import" under "Who Hit The Page" in your admin and click the big button "Import Geo Location Data" to import the geolocation database
+4. 
  * Place [whohit]Page name/identifier[/whohit] on the page or post you want visitors counted - e.g. place `[whohit]About Us[/whohit]`
  on your `About Us` page to see how many people visited that page.
  * Place `<?php who_hit_the_page( "Page Name" ); ?>` on your theme if you are a developer.
  * Optional: link to us by placing [whlinkback] in a wordpress page or post, or `<?php whtp_link_bank(); ?>` on your template files
-4. Visit one page you placed the shortcode once and go to your wordpress admin and click on 'Who Hit The Page' on the left to see your new statistics.
+5. Visit one page you placed the shortcode once and go to your wordpress admin and click on 'Who Hit The Page' on the left to see your new statistics.
 
 See the Arbitrary Information for more details
 
@@ -33,17 +36,23 @@ See the Arbitrary Information for more details
 
 = Where do I see the visitors' statistics after installing the plugin? =
 
-On your wordpress admin - Go to your admin and look for 'Who Hit The Page' on the main menu on the left, click on it you will see - also see Screenshot-1.
+On your wordpress admin - Go to your admin and look for 'Who Hit The Page' on the main menu on the left, click on it you will see a summary of the data or click on "View All Details" under "Who Hit The Pape" to see all the raw data - also see Screenshot-1.
 
 = Do my website visitors see the page hits? =
 
 No! Who Hit The Page -  Hit Counter is an invisible hit counter, it doesn't show visitors that they are counted, instead it helps you know about your visitors by registering their information so you will know where they are and what browser they use to view your website.
 
-= How do I discount myself as a visitor = 
+= How do I discount myself as a visitor? = 
 
-Go to the counters page on your admin and click the "-1" button corresponding to the page(s) you visited, if you have visited one page morethan once, then keep pressing the "-1" button until you are satisfied that page is discounted exactly by the number of your own visits on that page
+Go to the counters page on your admin and click the "-" button corresponding to the page(s) you visited, if you have visited one page more than once, then enter the number of times you have visited the page and then click the "-" button 
 
-= How do I Deny my own computer's IP address =
+= Does the plugin block denied IPs access to my site? =
+No. In this plugin, denying an IP only means "Do not count this IP as a visitor", this is for IPs such as Web Spiders, Search Engine Bots or yourself - you don't have to count yourself as a visitor when you are editing your page.
+
+= How can I block an IP address from accessing my site? = 
+This plugin does not have that feature, when you add an IP to the deny list, the plugin will only ignore the IP and not count it as a Visitor
+
+= How do I Deny my own computer's IP address? =
 
 If you know the IP address of your own devices like Home/Work Computer, you can go to "Who Hit The Page" then "Denied IPs" and 'Enter IP address to add to deny list' and click on 'Add To Deny List' to continuously disallow the plugin to count visits from that IP address. But Make sure this is a static IP address - meaning it doesn't change over time, otherwise you will have to keep updating your denied IP list.
 
@@ -62,6 +71,36 @@ If you know the IP address of your own devices like Home/Work Computer, you can 
 6. Screenshot-6.jpg - Shows information and support links and an update subsrciption form
 
 == Changelog ==
+
+= 1.4.0 =
+
+
+Major features for version 1.4
+
+* Added IP Geolocation by Country - Import Geo Location data from CSV file
+* Relate an IP/visitor with the pages visited
+* Relate an IP/visitor with the browsers used by that IP
+* Count visiting countries and the number of visitors from each country
+* Added Summary of hits (Visiting Countries, Browser's Used, Total Unique Visitors, Total Page Hits)
+* Added single visitor statistics (total hits for the visitor, pages visited and hit counts for each, browsers used by user, Country where the visitor visits from)
+* Export all data to a CSV file (import feature not yet implemented)
+
+Bugs and fixes
+
+* Bug fixes
+* Discount hits by a number specified by user or default to 1
+* Fixed browser/user agent string - now browser are identified by name, such as Google Chrome, Mozilla Firefox, Apple Safari, Internet Explorer, Opera, etc
+
+Other changes
+* Changed layout to incoporate the layout of WordPress
+* New Pages Added each for a specific purpose
+- Who Hit The Page, shows the summary of all data (total hits, top 5 visiting countries, browsers used, total unique visitors)
+- View All Details, shows the raw data as before (all page hits, all IP addresses in a table)
+- Visitor Stats, shows the details of a single visitor, select visitor's IP to see pages visited, browsers used, total visits and date of first and last visit
+- Denied IPs, where you add or view a list of denied IP addresses
+- Export Import, Import Geolocation data or export statistics data to CSV files
+- Settings, options page for backup export and import
+- Help, shows get started and other useful information
 
 = 1.3.2 =
 
@@ -112,7 +151,7 @@ Feature update
 
 * Major Feature Update
 	- IP deny List, you can now deny an IP address from being counted - Separate page for denied IPs
-	- Discount , If you visit your own site and you are counted, you can now discount yourself by clicking on "-1" next to page identifier you visited.	
+	- Discount , If you visit your own site and you are counted, you can now discount yourself by clicking on "-" next to page identifier you visited.	
     - Reset Individual/All Page Counters
     - Reset Individual/All IP total counts
     - Permanently delete page/ip counter information from database
