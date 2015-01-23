@@ -128,7 +128,7 @@ function update_old_user_agents(){
 	$user_agents = $wpdb->get_results( "SELECT ip_address, user_agent FROM whtp_hitinfo" );
 	if ( count($user_agents) > 0 ){
 		foreach ( $user_agents as $uagent ) {
-			$ua = getBrowser ( $uagent->user_agent );
+			$ua = whtp_browser_info();
 			$browser = $ua['name'];
 			$ip = $uagent->ip_address;
 			if ( $uagent->user_agent != $browser ){
