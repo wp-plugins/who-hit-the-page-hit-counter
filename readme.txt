@@ -1,20 +1,20 @@
 === Who Hit The Page - Hit Counter ===
 Contributors: mahlamusa
 Donate link: http://whohit.co.za/donate/
-Author Uri: http://lindeni.co.za
-Plugin Uri: http://whohit.co.za/
+Author URI: http://lindeni.co.za
+Plugin URI: http://whohit.co.za/
 Tags: geolocation, geo location, hit counter, visit counter, visitor stats, ip statistics, statistics, ip counter, browser detector
 Requires at least: 3.5
 Tested up to: 4.1
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Count the number of visitors on your wordpress site, know their IP addresses and browser types.
+Count the number of visitors on your wordpress site, know their IP addresses and browsers they use.
 
 == Description ==
 
-Who Hit The Page - Hit Counter lets you know who hit your page by adding an invisible page hit counter on your website, so you know how many times a page has been visited and also know the IP addresses of your visitors and the number of visits per IP adrdress along with the time of first and last visit. This plugin will also register the visitor's browser type
+Lets you know who visted your pages by adding an invisible page hit counter on your website, so you know how many times a page has been visited in total and how many times each user identified by IP address has visited each page. You will also know the IP addresses of your visitors and relate the IP addresses to the country of the visitor and all browsers used by that IP/user.
 
 == Installation ==
 
@@ -71,6 +71,12 @@ If you know the IP address of your own devices like Home/Work Computer, you can 
 6. Screenshot-6.jpg - Shows information and support links and an update subsrciption form
 
 == Changelog ==
+
+= 1.4.1 =
+
+* Fixed preg_match() bug
+* Added detection of more browsers than before. Now the plugin can detect all of the following browsers and bots:
+Amaya, Android, Bingbot, BlackBerry, Chrome, Firebird, Firefox, Galeon, Googlebot, iCab, GNU IceCat, GNU IceWeasel, Internet Explorer, Internet Explorer Mobile, Konqueror, Lynx, Mozilla, MSNBot, MSN TV, NetPositive, Netscape, Nokia Browser, OmniWeb, Opera, Opera Mini, Opera Mobile, Phoenix, Safari, Yahoo! Slurp, BlackBerry Tablet OS, W3C Validator, Yahoo! Multimedia
 
 = 1.4.0 =
 
@@ -172,16 +178,12 @@ You will be able to see the stats on your wordpress admin, just click on the `Wh
 - please remember to replace the `<code>-Page name or identifier-</code>` with the name of the page you placed the shortcode on, 
 if you like you can put in anything you want to use as an identifier for the page.
 
-* For example: On our [About Us Page](http://3pxwebstudios.co.nf/about-us/ "") we placed <code>[whohit]About Us[/whohit]</code>
-and on our [web hosting](http://3pxwebstudios.co.nf/web-hosting/ "") page we placed <code>[whohit]Web Hosting[/whohit]</code>. 
-
-* Please note that what you put between [whohit] and [/whohit] doesn\'t need to be the same as the page name - that means
-for our [website design and development page](http://3pxwebstudios.co.nf/web-design-and-development/ "") we can use
- <code>[whohit]Development[whohit]</code> instead of the whole <code>[whohit]website design and development page[whohit]</code> string, 
- its completely up to you what you put as long as you will be able to see it on your admin what page has how many visits.
+* For example: On our [About Us Page](http://whohit.co.za/about/ "") we placed <code>[whohit]About Us[/whohit]</code>
+* Please note that what you put between <code>[whohit]</code> and <code>[/whohit]</code> doesn't need to be the same as the page name - that means
+for our [website design and development page] we can use <code>[whohit]Development[whohit]</code> instead of the whole <code>[whohit]website design and development page[whohit]</code> string, its completely up to you what you put as long as you will be able to see it on your admin what page has how many visits.
 
 
 == Links You may need to visit ==
 
-Here's a link to [3px Web Studios](http://3pxwebstudios.co.nf/ ""),to [WordPress Hit Counter's documentation](3pxwebstudios.co.nf/wordpress-resources/who-hit-the-page-hit-counter/ "")
+Here's a link to [Who Hit The Page Hit Counter Home Page](http://whohit.co.za/ "") and this one is for the [Documentation](http://whohit.co.za/who-hit-the-page-hit-counter/ "")
 

@@ -1,5 +1,4 @@
 <?php
-
 /*
 * Hit counter function
 * call the function on the page you want the counter to work on
@@ -30,7 +29,8 @@ function whtp_count_hits( $page ){
 	global $wpdb;
 	$page = $page;
 	
-	$ua = getBrowser(); //Get browser info
+	//$ua = getBrowser(); //Get browser info
+	$ua = whtp_browser_info();
 	$browser = $ua['name'];
 		
 	$page_check = $wpdb->get_var("SELECT page FROM whtp_hits WHERE page = '$page' LIMIT 1");
@@ -61,7 +61,8 @@ function whtp_hit_info( $page ){
 	$date_ftime 		= date("Y/m/d") . ' ' . date('H:i:s'); # visitor's first visit
 	$date_ltime			= date("Y/m/d") . ' ' . date('H:i:s'); # visitor's last visit
 	
-	$ua = getBrowser(); //Get browser info
+	//$ua = getBrowser(); //Get browser info
+	$ua = whtp_browser_info();
 	$browser = $ua['name'];
 	
 	$page_id = get_page_id( $page );
@@ -379,6 +380,157 @@ function whtp_signup_form(){?>
 </form>
 <?php }
 
+/*
+* These functions reliy on the BroserDetection class
+* Resturns an array ( $name, $version )
+*
+*/
+function whtp_browser_info(){
+	require_once('BrowserDetection.php');
+	$browser_info = array();
+	$browser = new BrowserDetection();
+	if ($browser->getBrowser() == BrowserDetection::BROWSER_AMAYA ) {
+		$browser_info['name'] = 'Amaya';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_ANDROID ) {
+		$browser_info['name'] = 'Android';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_BINGBOT) {
+		$browser_info['name'] = 'Bingbot';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_BLACKBERRY) {
+		$browser_info['name'] = 'BlackBerry';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_CHROME) {
+		$browser_info['name'] = 'Chrome';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_FIREBIRD) {
+		$browser_info['name'] = 'Firebird';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_FIREFOX) {
+		$browser_info['name'] = 'Firefox';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_GALEON) {
+		$browser_info['name'] = 'Galeon';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_GOOGLEBOT) {
+		$browser_info['name'] = 'Googlebot';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_ICAB) {
+		$browser_info['name'] = 'iCab';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_ICECAT) {
+		$browser_info['name'] = 'GNU IceCat';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_ICEWEASEL) {
+		$browser_info['name'] = 'GNU IceWeasel';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_IE) {
+		$browser_info['name'] = 'Internet Explorer';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_IE_MOBILE) {
+		$browser_info['name'] = 'Internet Explorer Mobile';
+		$broswer_info['version'] = $browser->getVersion();
+	}elseif ($browser->getBrowser() == BrowserDetection::BROWSER_KONQUEROR) {
+		$browser_info['name'] = 'Konqueror';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_LYNX) {
+		$browser_info['name'] = 'Lynx';
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_MOZILLA) {
+		$browser_info['name'] = 'Mozilla';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_MSNBOT) {
+		$browser_info['name'] = 'MSNBot';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_MSNTV) {
+		$browser_info['name'] = 'MSN TV';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_NETPOSITIVE) {
+		$browser_info['name'] = 'NetPositive';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_NETSCAPE) {
+		$browser_info['name'] = 'Netscape';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_NOKIA) {
+		$browser_info['name'] = 'Nokia Browser';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_OMNIWEB) {
+		$browser_info['name'] = 'OmniWeb';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_OPERA) {
+		$browser_info['name'] = 'Opera';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_OPERA_MINI) {
+		$browser_info['name'] = 'Opera Mini';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_OPERA_MOBILE) {
+		$browser_info['name'] = 'Opera Mobile';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_PHOENIX) {
+		$browser_info['name'] = 'Phoenix';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_SAFARI) {
+		$browser_info['name'] = 'Safari';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_SLURP) {
+		$browser_info['name'] = 'Yahoo! Slurp';
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_TABLET_OS) {
+		$browser_info['name'] = 'BlackBerry Tablet OS';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_W3CVALIDATOR) {
+		$browser_info['name'] = 'W3C Validator';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ($browser->getBrowser() == BrowserDetection::BROWSER_YAHOO_MM) {
+		$browser_info['name'] = 'Yahoo! Multimedia';
+		$broswer_info['version'] = $browser->getVersion();
+	}
+	elseif ( $browser->getBrowser() == BrowserDetection::BROWSER_UNKNOWN ) {
+		$browser_info['name'] = 'Unknown';
+		$broswer_info['version'] = 'Unknown';
+	}
+	/*
+	*else($browser->getBrowser() == BrowserDetection:: ) {
+	*	
+	*}
+	*/
+	
+	return $browser_info;
+}
+/*
+* This is the old get browser method
+* Now replaced with the browserInfo();
+* browserInfor() is updated, detects more browsers than getBrowser()
 
 
 function getBrowser($u_agent = "")
@@ -455,7 +607,7 @@ function getBrowser($u_agent = "")
 	* detect other browsers that don't use standard naming conversions
 	*
 	*/
-	
+	/*
 	if ( $bname == "Unknown" ){
 		$u_agent = strtolower( $u_agent );
 		if(preg_match('/msie/i',$u_agent) && !preg_match('/opera/i',$u_agent))
@@ -532,6 +684,12 @@ function getBrowser($u_agent = "")
         'pattern'    => $pattern
     );
 }
+*
+*
+*
+*/
+
+
 
 /*
 * Future functionality

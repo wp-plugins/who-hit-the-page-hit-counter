@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: Who Hit The Page - Hit Counter
-Plugin URI: http://3pxwebstudios.co.nf/wordpress-resources/who-hit-the-page-hit-counter
-Description: Who Hit The Page - Hit Counter lets you know who hit your page by adding an invisible page hit counter on your website, so you know how many times a page has been visited and also know the IP addresses of your visitors. This plugin will also register the visitor's browser type. Place <code>[whohit]-Page name or identifier-[/whohit]</code> on any page to count visitors of that page.
-Version: 1.4.0
+Plugin URI: http://whohit.co.za/who-hit-the-page-hit-counter
+Description: Lets you know who visted your pages by adding an invisible page hit counter on your website, so you know how many times a page has been visited in total and how many times each user identified by IP address has visited each page. You will also know the IP addresses of your visitors and relate the IP addresses to the country of the visitor and all browsers used by that IP/user.
+Version: 1.4.1
 Author: mahlamusa
-Author URI: http://3pxwebstudios.co.nf
+Author URI: http://lindeni.co.za
+Plugin URI: http://whohit.co.za
 License: GPL
 */
 /*
@@ -106,7 +107,7 @@ add_shortcode('whohit','who_hit_the_page_short_code');
 Link to us
 */
 function whtp_link_bank(){
-	$link = '<a href="http://3pxwebstudios.co.nf" rel="bookmark" title="Wordpress plugins and web design resources" target="_blank">Wordpress plugins by 3px Web Studios</a>';
+	$link = '<a href="http://lindeni.co.za" rel="bookmark" title="Wordpress plugins and web design resources" target="_blank">Wordpress plugins by Mahlamusa Mahlalela</a>';
 	return $link;
 }
 add_shortcode('whlinkback','whtp_link_bank');

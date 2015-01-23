@@ -93,8 +93,8 @@
                                 
                                 <li><b>Plugin's documentation</b></li>
                                 <li>
-                                    <a href="http://3pxwebstudios.co.nf/wordpress-resources/who-hit-the-page-hit-counter" title="Multi Purpose Mail Form wordpress plugin" target="_blank">
-                                        http://3pxwebstudios.co.nf/wordpress-resources/who-hit-the-page-hit-counter
+                                    <a href="http://whohit.co.za/who-hit-the-page-hit-counter" title="Multi Purpose Mail Form wordpress plugin" target="_blank">
+                                        http://whohit.co.za/who-hit-the-page-hit-counter
                                     </a>
                                 </li>
                                 
