@@ -5,8 +5,8 @@ Author URI: http://lindeni.co.za
 Plugin URI: http://whohit.co.za/
 Tags: geolocation, geo location, hit counter, visit counter, visitor stats, ip statistics, statistics, ip counter, browser detector
 Requires at least: 3.5
-Tested up to: 4.1
-Stable tag: 1.4.1
+Tested up to: 4.2.2
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,12 @@ If you know the IP address of your own devices like Home/Work Computer, you can 
 6. Screenshot-6.jpg - Shows information and support links and an update subsrciption form
 
 == Changelog ==
+
+= 1.4.2 =
+
+* Fixed Country count bug
+* Added Country Flags
+* Changed to list top 15 visiting countries instead of 5
 
 = 1.4.1 =
 

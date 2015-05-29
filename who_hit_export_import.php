@@ -298,36 +298,32 @@
                                         <div class="welcome-panel-column" style="padding-right: 25px;">
                                             <h4>Import Location Data</h4>
                                             <?php
-                                                if ( ! defined( 'WP_PLUGIN_DIR' ) )
-                                                    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
-                                            
+                                                                                            
                                                 function whtp_import_using_sql_files(){
-                                                    global $wpdb;
-                                                    
-                                                    //for ( $count = 1; $count < 100; $count ++ ){
-                                                        //$file	= WP_PLUGIN_DIR . '/who-hit-the-page-hit-counter/geodata/geo_data_'.$count.'.sql';							
-                                                        $file	= WP_PLUGIN_DIR . '/who-hit-the-page-hit-counter/geodata/whtp_ip2location.sql';
-                                                        if ( is_file ( $file ) ){
-                                                            $fp 	= fopen($file, 'r');
-                                                            if ( $fp ) {
-                                                                $sql 	= fread($fp, 7000000);										
-                                                                $queries = explode(";", $sql);
-                                                                
-                                                                foreach ( $queries as $sql ){
-                                                                    if ( $sql != "" ){
-                                                                        $wpdb->query( $sql );
-                                                                    }
-                                                                }
-                                                                echo '<div class="success"><p>Import Completed Successfully</p></div>';
-                                                            }
-                                                        }
-                                                    //}
+                                                    global $wpdb;                                                    
+                                                    							
+													$file	= WP_PLUGIN_DIR . '/who-hit-the-page-hit-counter/geodata/whtp_ip2location.sql';
+													if ( is_file ( $file ) ){
+														$fp 	= fopen($file, 'r');
+														if ( $fp ) {
+															$sql 	= fread($fp, 100000000);										
+															$queries = explode(";", $sql);
+															
+															foreach ( $queries as $sql ){
+																if ( $sql != "" ){
+																	$wpdb->query( $sql );
+																}
+															}
+															echo '<div class="updated"><p>Import Completed Successfully</p></div>';
+														}
+													}else{
+														echo "<p>The .sql file was not found. Please make sure you have a file named 'whtp_ip2location.sql' inside the 'geodata' folder located within the folder of this plugin.</p>";	
+													}
                                                 }
-                                                function whtp_import_from_csv_file(){											
-                                                    // get the file to import
-                                                    //$file = $_FILES['csv']['tmp_name'];
-                                                    
-                                                    $file = WP_PLUGIN_DIR . '/who-hit-the-page-hit-counter/geodata/GeoIPCountryWhois.csv';
+                                                function whtp_import_from_csv_file(){
+													global $wpdb;
+                                                    $file = WHTP_GEODATA_URL . 'GeoIPCountryWhois.csv';
+													echo "FILE: ". $file;
                                                     //echo "<p>Importing from Temp CSV : <br /><code>" . $file . "</code></p>";
                                                     echo "<p><strong>Please Wait</strong></p>";
                                                     
@@ -339,7 +335,7 @@
                                                             $row_number = 0;
                                                             $data = fgetcsv ( $handle, 1000, ",", '"');
                                                             if ( !empty ( $data ) ){
-                                                                $insert = mysql_query ( "INSERT INTO whtp_ip2location ( ip_from, ip_to, decimal_ip_from, decimal_ip_to, country_code, country_name ) VALUES
+                                                                $insert = $wpdb->query( "INSERT INTO whtp_ip2location ( ip_from, ip_to, decimal_ip_from, decimal_ip_to, country_code, country_name ) VALUES
                                                                 (
                                                                     '" . addslashes ( $data[0] ) . "',
                                                                     '" . addslashes ( $data[1] ) . "',
@@ -353,7 +349,7 @@
                                                         echo '<div class="success"><p>Import Completed Successfully</p></div>';
                                                     }
                                                     else{
-                                                        echo '<p>File not found</p>';
+                                                        echo "<p>File 'GeoIPCountryWhois.csv' was not found. Please make sure you have a file named 'GeoIPCountryWhois.csv' inside the 'geodata' folder located within the folder of this plugin.</p>";
                                                     }
                                                 }
                                                 
@@ -363,7 +359,7 @@
                                                 }
                                             ?>
                                             <form method="post" action="" enctype="multipart/form-data" name="form1" id="form1">
-                                                <p>Choose your file to import</p>                        
+                                                <p>Click on the button below to start the import process.</p>                        
                                                <!-- <p><input type="file" name="csv" id="csv"  /></p> -->
                                                 <p>
                                                     <input type="hidden" name="import-geo" value="import-geo" />

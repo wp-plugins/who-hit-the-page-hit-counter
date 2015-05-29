@@ -105,7 +105,7 @@ function whtp_hit_info( $page ){
 	
 	// get the country code corresponding to the visitor's IP
 	$country_code = get_country_code( $ip_address );
-	country_count( $country_code );
+	$counted = country_count( $country_code );
 }
 
 
@@ -121,7 +121,7 @@ function get_country_code( $visitor_ip ){
 	if ( $country_code ){		
 		return $country_code;
 	}	
-	else return "";
+	else return "AA";
 }
 /*
 * Count a visiting country
@@ -133,16 +133,16 @@ function country_count( $country_code ){
 	$code = $wpdb->get_var("SELECT country_code FROM whtp_visiting_countries WHERE country_code = '$country_code'");
 	
 	if ( $code ) {	
-		if ( $wpdb->update("whtp_visiting_countriess", array("count"=>"count+1"), array("country_code"=> $country_code), array("%d"), array("%s")) )
+		$count = $wpdb->get_var("SELECT count FROM whtp_visiting_countries WHERE country_code='$country_code'");
+		$count +=1;
+		if ( $wpdb->update("whtp_visiting_countries", array("count"=>$count), array("country_code"=> $country_code), array("%d"), array("%s")) )
 			$res = true;
 		else $res = false;
 	}
-	else {
-		if ( $code != ""){
-			if ( $wpdb->insert( "whtp_visiting_countries", array("country_code"=>$country_code, "count"=>1)) )
-				$res = true;
-			else $res = false;
-		}
+	else {		
+		if ( $wpdb->insert( "whtp_visiting_countries", array("country_code"=>$country_code, "count"=>1)) )
+			$res = true;
+		else $res = false;
 	}
 	return $res;
 }
@@ -221,19 +221,19 @@ function whtp_reset_page_count( $page = ""){
 		#don't reset all but specific page
 		$update_page = mysql_query("UPDATE whtp_hits SET count = 0 WHERE page = '$page'");
 		if ( $update_page ){
-			echo '<div class="success-msg">The count for the page "' .$page . '" has been reset successfully.</div>'; 
+			echo '<p class="success-msg">The count for the page "' .$page . '" has been reset successfully.</p>'; 
 		}else{
-			echo '<div class="error-msg">Failed to reset count for page "'. $page . '"' .': ' . mysql_error() . '</div>';
+			echo '<p class="error-msg">Failed to reset count for page "'. $page .'</p>';
 		}
 	}else{
 		#reset all
 		$update_all = mysql_query("UPDATE whtp_hits SET count = 0 ");
 		if ( $update_all ) {
 			whtp_reset_ip_info("all");
-			echo '<div class="success-msg">The count for "All" pages has been reset successfully.</div>';
+			echo '<p class="success-msg">The count for "All" pages has been reset successfully.</p>';
 		}
 		else{
-			echo '<div class="error-msg">Failed to reset count for "All" pages' . mysql_error() . '</div>';
+			echo '<p class="error-msg">Failed to reset count for "All" pages.</p>';
 		}
 	}
 	
@@ -253,20 +253,20 @@ function whtp_reset_ip_info( $reset = ""){
 		# reset specific
 		$reset=$wpdb->update("whtp_hitinfo", array("ip_total_visits"=>0),array("ip_address"=>$ip_address), array("%d"), array("%s"));
 		if ( $reset ) {
-			echo '<div class="success-msg">The count for ip address: ' . $ip_address . ' has been reset successfully.</div>';
+			echo '<p class="success-msg">The count for ip address: ' . $ip_address . ' has been reset successfully.</p>';
 		}
 		else{
-			echo '<div class="error-msg">Failed to reset count for IP: ' . $ip_address  .'</div>';
+			echo '<p class="error-msg">Failed to reset count for IP: ' . $ip_address  .'</p>';
 		}
 	}
 	elseif($reset_ip == "all" ){
 		# reset all ip counters
 		$reset_all = $wpdb->update( "whtp_hitinfo",array("ip_total_visits"=>0), array("%d"));
 		if ( $reset_all ) {
-			echo '<div class="success-msg">The count for "All" IPs has been reset successfully.</div>';
+			echo '<p class="success-msg">The count for "All" IPs has been reset successfully.</p>';
 		}
 		else{
-			echo '<div class="error-msg">Failed to reset count for "All" IPs.</div>';
+			echo '<p class="error-msg">Failed to reset count for "All" IPs.</p>';
 		}
 	}
 	$_POST['ip_address'] = "";
@@ -281,17 +281,17 @@ function whtp_delete_ip (){
 	if ( $delete_ip == "this_ip" ) {
 		$del = $wpdb->query ("DELETE FROM whtp_hitinfo WHERE ip_address='$ip_address'");
 		if ( $del ){
-			echo '<div class="success-msg">The IP address ' . $ip_address . ' has been removed from the database</div>';
+			echo '<p class="updated">The IP address ' . $ip_address . ' has been removed from the database</p>';
 		}else{
-			echo '<div class="error-msg">Failed to remove IP from database.</div>';
+			echo '<p class="updated">Failed to remove IP from database.</p';
 		}
 	}
 	elseif ( $delete_ip == "all" ){
 		$del = $wpdb->query("DELETE FROM whtp_hitinfo");
 		if ( $del ){
-			echo '<div class="success-msg">All IP addresses have been removed from the database</div>';
+			echo '<p class="updated">All IP addresses have been removed from the database</p>';
 		}else{
-			echo '<div class="error-msg">Failed to remove IP addresses from database.</div>';
+			echo '<p class="updated">Failed to remove IP addresses from database.</p>';
 		}	
 	}
 	$_POST['delete_this_ip'] = "";
@@ -307,17 +307,17 @@ function whtp_delete_page( $delete_page = ""){
 	if ( $delete_page != "all" ){
 		$del = $wpdb->query ("DELETE FROM whtp_hits WHERE page='$delete_page'");
 		if ( $del ){
-			echo '<div class="success-msg" id="message">The page "' . $delete_page . '" has been deleted from your page counters records.</div>';
+			echo '<p class="updated" id="message">The page "' . $delete_page . '" has been deleted from your page counters records.</p>';
 		}else{
-			echo '<div class="error-msg">Failed to remove page "' . $delete_page . '"\'s counts.</div>';
+			echo '<p class="updated">Failed to remove page "' . $delete_page . '"\'s counts.</p>';
 		}
 	}
 	else{
 		$del = $wpdb->query("DELETE FROM whtp_hits");
 		if ( $del ){
-			echo '<div class="updated fade" id="message">All page counts have been deleted from the hit counter table. New entries will be made when users visit your pages again. If you no longer wish to count visits on certain pages, go to the page editor and remove the <code>[whohit]..[/whohit]<code> shortcode. If you don\'t want to see this table, click "Delete All" to remove the pages.</div>';
+			echo '<p class="updated fade" id="message">All page counts have been deleted from the hit counter table. New entries will be made when users visit your pages again. If you no longer wish to count visits on certain pages, go to the page editor and remove the <code>[whohit]..[/whohit]<code> shortcode. If you don\'t want to see this table, click "Delete All" to remove the pages.</p>';
 		}else{
-			echo '<div class="error-msg">Failed to remove page counts.</div>';
+			echo '<p class="error-msg">Failed to remove page counts.</p>';
 		}
 	}
 }
@@ -346,9 +346,9 @@ function whtp_deny_ip(){
 	$deny = $wpdb->update("whtp_hitinfo", array("ip_status"=>"denied"), array("ip_address"=>$ip_address), array("%s"), array("%s"));
 	
 	if ( $deny ) {
-		echo '<div class="updated fade"  id="message">Denied . The IP "' . $ip_address . '" has been denied and will not be counted the next time it visits your website.</div>';
+		echo '<p class="updated fade"  id="message">Denied . The IP "' . $ip_address . '" has been denied and will not be counted the next time it visits your website.</p>';
 	}else{
-		echo '<div class="error-msg">Failed to Deny "' . $ip_address . '" </div>';
+		echo '<p class="updated">Failed to Deny "' . $ip_address . '" </p>';
 	}
 }
 /*
@@ -363,9 +363,9 @@ function whtp_discount_page(){
 	$discount_page = $wpdb->update("whtp_hits", array("count"=>$old_count-$discountby), array("page"=>$page));
 	
 	if ( $discount_page ) {
-		echo '<div class="updated fade" id="message"><p>Discounted</b>. The Page "' . $page . '" has been discounted by ' . $discountby .'</div>';
+		echo '<p class="updated fade" id="message"><p>Discounted</b>. The Page "' . $page . '" has been discounted by ' . $discountby .'</p>';
 	}else{
-		echo '<div class="error-msg">Failed to Discount on the page "' . $page . '."</div>';
+		echo '<p class="error-msg">Failed to Discount on the page "' . $page . '."</p';
 	}
 }
 

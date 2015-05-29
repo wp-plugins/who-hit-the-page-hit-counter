@@ -3,7 +3,7 @@
 Plugin Name: Who Hit The Page - Hit Counter
 Plugin URI: http://whohit.co.za/who-hit-the-page-hit-counter
 Description: Lets you know who visted your pages by adding an invisible page hit counter on your website, so you know how many times a page has been visited in total and how many times each user identified by IP address has visited each page. You will also know the IP addresses of your visitors and relate the IP addresses to the country of the visitor and all browsers used by that IP/user.
-Version: 1.4.1
+Version: 1.4.2
 Author: mahlamusa
 Author URI: http://lindeni.co.za
 Plugin URI: http://whohit.co.za
@@ -27,7 +27,8 @@ License: GPL
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
- 
+
+include('config.php');
 include('count_who_hit.php');
 include('who_hit_processor.php');
 include('who_hit_functions.php');
@@ -53,8 +54,23 @@ function whtp_remove(){
 */
 if (is_admin()){
 	function whtp_admin_menu(){		
-		$icon_uri = plugins_url("images/icon.png");
-		add_object_page( 'Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');	
+		add_object_page(
+			'Who Hit The Page', 
+			'Who Hit The Page', 
+			'administrator', 
+			'whtp-admin-menu',
+			'whtp_object_page_callback'
+		);
+		/**add_menu_page(
+			__( 'Who Hit The Page'), 
+			__( 'Who Hit The Page'), 
+			'manage_options', 
+			'whtp-admin-menu',
+			'whtp_object_page_callback',
+			'dashicons-admin-stats'
+		);
+		**/
+		
 		add_submenu_page('whtp-admin-menu','View All Details','View All Details','administrator','whtp-view-all','whtp_view_all_callback');
 		add_submenu_page('whtp-admin-menu','Visitor Stats','Visitor Stats','administrator','whtp-visitor-stats','whtp_visitors_stats_callback');
 		add_submenu_page('whtp-admin-menu','Denied IPs','Denied IPs','administrator','whtp-denied-ips','whtp_denied_submenu_callback');
@@ -63,7 +79,8 @@ if (is_admin()){
 		add_submenu_page('whtp-admin-menu','Help','Help','administrator','whtp-help','whtp_help_submenu_callback');
 		//add_management_page('Who Hit The Page', 'Who Hit The Page', 'administrator', 'whtp-admin-menu','whtp_object_page_callback');
 	}
-	add_action('admin_menu','whtp_admin_menu');	
+	add_action('admin_menu','whtp_admin_menu');
+	add_filter('whtp_additional_settings','whtp_additional_settings_action');
 	/*
 	* Submenu callback functions
 	*/
@@ -90,10 +107,15 @@ if (is_admin()){
 		 include('who_hit_help.php');//admin page
 	}
 }
+
+
+
 /*
 * Hit counter short code
 * add [whohit]Page name or title[/whohit] to the page you want visitors counted
 */
+
+
 function who_hit_the_page_short_code( $atts=null, $content=null ){
 	extract(shortcode_atts(array('id'=>''),$atts));
 	if ( $content != ""){

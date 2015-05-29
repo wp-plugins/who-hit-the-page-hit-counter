@@ -1,0 +1,19 @@
+
+/* @todo can we combine these into a class or use an existing dashicon one? */
+#welcome-panel.welcome-panel .welcome-panel-close::before{
+	background: none;
+	color: #bbb;
+	content: '\f153';
+	display: block !important;
+	font: normal 16px/1 'dashicons';
+	speak: none;
+	height: 20px;
+	margin: 2px 0;
+	text-align: center;
+	width: 20px;
+	-webkit-font-smoothing: antialiased !important;
+}
+
+#welcome-panel.welcome-panel .welcome-panel-close:hover:before{
+	color: #c00;
+}

@@ -91,11 +91,11 @@
 	
 	function top_visiting_countries(){
 		global $wpdb;
-		$select_countries = $wpdb->get_results("SELECT * FROM whtp_visiting_countries ORDER BY count");
+		$select_countries = $wpdb->get_results("SELECT * FROM whtp_visiting_countries ORDER BY count DESC");
 		if ( $select_countries ){
 			$countries = array();
 			$num_rows = count($select_countries);
-			if ( $num_rows > 5 ) $max_count = 5;
+			if ( $num_rows > 15 ) $max_count = 15;
 			else $max_count = $num_rows;
 			
 			for ( $count = 0; $count < $max_count; $count ++ ) {
@@ -141,6 +141,17 @@
                 </div>
                 <div class="postbox">
                     <div class="handlediv" title="Click to toggle"><br /></div>
+                    <h3 class="hndle">Need More</h3>
+                    <div class="inside welcome-panel-column welcome-panel-last">
+                        <h4>Display a hit counter widget on any page or post. Its easy to change the colors and the font sizes for the numbers.</h4>
+                        <a href="http://shop.whohit.co.za/" target="_blank">
+                        	<img src="<?php echo WHTP_IMAGES_URL . 'widget_get.png'; ?>" alt="Get front end widget for who hit the page" />
+                        </a>
+                        <a href="http://shop.whohit.co.za/" class="button button-primary button-hero" style="width:100%; text-align:center;" target="_blank">Download Now</a>
+                    </div>  
+                </div>
+                <div class="postbox">
+                    <div class="handlediv" title="Click to toggle"><br /></div>
                     <h3 class="hndle">Subscribe to updates</h3>
                     <div class="inside welcome-panel-column welcome-panel-last">
 					   <?php
@@ -176,15 +187,13 @@
                             <div id="welcome-panel" class="welcome-panel">                                
                                 <div class="welcome-panel-content">
                                     <p class="about-description">This is a summary of your page hit statistics.</p>
-                                    <!-- Top -->
+                                    <!-- Totals -->
+                                    <br />
+                                    <p class="about-description"><strong>Total Page Hits: <?php echo total_hits(); ?></strong></p>
+                                    <p class="about-description"><strong>Total Unique Visitors : <?php echo $total_unique; ?></strong></p>
+                                    <hr align="center" />
+                                    <!-- /totals -->
                                     <div class="welcome-panel-column-container">
-                                        <div class="welcome-panel-column">
-                                            <h4>Total Page Hits: <?php echo total_hits(); ?></h4>
-                                            <h4>Total Unique Visitors :<?php echo $total_unique; ?></h4>
-                                            <!--<p>Today Only: <strong></strong></p>
-                                            <p>Yesterday<strong></strong></p>
-                                            <p>Last 7 Days<strong><?php //past_present( $date ); ?></strong></p>-->
-                                        </div>
                                         <div class="welcome-panel-column">
                                             <h4>Top 5 Visitors</h4>                                                
                                             <?php 
@@ -195,7 +204,6 @@
                                                 }
                                                 if ($limit > 0){
                                                     echo '<table cellpadding="5" cellspacing="2">' . "\n";
-                                                    echo "\t<thead><th>IP Address</th><th>Total Hits</th></thead>\n";
                                                     echo "\t<tbody>\n";
                                                     for ($count = 0; $count < $limit; $count ++){
                                                         $top = $top_visitors[$count] ;	
@@ -209,41 +217,6 @@
                                                     echo "</table>";
                                                 }
                                             }
-                                            ?>
-                                            <!--<p>Today Only: <strong><?php echo total_unique_ips("today"); ?></strong></p>
-                                            <p>Yesterday: <strong><?php echo total_unique_ips("yesterday"); ?></strong></p>
-                                            <p>Last 7 Days: <strong><?php echo total_unique_ips("7 days"); ?></strong></p>-->
-                                        </div>
-                                        <div class="welcome-panel-column welcome-panel-last">
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="postbox inside">
-                    	<div class="handlediv" title="Click to toggle"><br /></div>
-                    	<h3 class="hndle">More information</h3>
-                        <div class="inside">
-                            <div id="welcome-panel" class="welcome-panel">
-                                <div class="welcome-panel-content">     
-                                    <!-- Main -->
-                                    <div class="welcome-panel-column-container">
-                                        <div class="welcome-panel-column">
-                                            <h4>Used Browsers</h4>                    
-                                            <?php if ( count ( $browsers ) > 0 ){ ?>
-                                            <ul>
-                                                <?php
-                                                foreach ( $browsers as $browser ){
-                                                    echo '<li><div class="welcome-icon welcome-widgets-menus">'
-                                                    . $browser->agent_name .'</div></li>';                        
-                                                }//end for ?>
-                                            </ul>
-                                            <?php
-                                                }else{
-                                                    echo '<p>Unknown Browsers</p>';
-                                                }
                                             ?>
                                         </div>
                                         <div class="welcome-panel-column">
@@ -260,11 +233,19 @@
                                                 
                                                 for ( $count = 0; $count < count ( $top_countries ); $count ++ ){
                                                     $top_country = $top_countries[$count];
-                                                    echo '<li><div class="welcome-icon welcome-widgets-menus">' 
+													$image_prefix =  $top_country['country_name'] ;
+													if ( $image_prefix == 'Unknown Country'){
+														//will result in 0.png below, which is the icon for unknown countries	
+														$image_prefix = '0';
+													}else{
+														$image_prefix = strtolower( $top_country['country_code'] );
+													}
+                                                    echo '<li>'
+													. '<img src="' . WHTP_FLAGS_URL . $image_prefix . '.png" alt="Flag of ' .$top_country['country_code'] . '" title="' . $top_country['country_name'] .'" /> '
                                                     . $top_country['country_name'] . "\t ,"
                                                     . $top_country['country_code'] . "\t ("
                                                     . $top_country['count']
-                                                    . ') </div></li>';
+                                                    . ') </li>';
                                                 }
                                                 
                                                 ?>
@@ -272,16 +253,29 @@
                                             
                                             <?php }//end if 
                                             ?>
-                                        </div>                                    
+                                        </div>
+                                        <div class="welcome-panel-column welcome-panel-last">
+                                            <h4>Used Browsers</h4>                    
+                                            <?php if ( count ( $browsers ) > 0 ){ ?>
+                                            <ul>
+                                                <?php
+                                                foreach ( $browsers as $browser ){
+                                                    echo '<li><div class="welcome-icon welcome-widgets-menus">'
+                                                    . $browser->agent_name .'</div></li>';                        
+                                                }//end for ?>
+                                            </ul>
+                                            <?php
+                                                }else{
+                                                    echo '<p>Unknown Browsers</p>';
+                                                }
+                                            ?>
+                                        </div>
                                     </div>
-                                    <div class="welcome-panel-column-container">
-                                        <h4>Top Visiting Countries</h4>
-                                        
-                                    </div>
-                                </div><!-- welcome-panel-content -->
-                            </div><!-- welcome-panel -->
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    
                     <div class="postbox inside">
                     	<div class="handlediv" title="Click to toggle"><br /></div>
                     	<h3 class="hndle">Disclaimer</h3>

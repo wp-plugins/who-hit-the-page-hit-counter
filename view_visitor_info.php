@@ -114,6 +114,17 @@
                 </div>
                 <div class="postbox">
                     <div class="handlediv" title="Click to toggle"><br /></div>
+                    <h3 class="hndle">Need More</h3>
+                    <div class="inside welcome-panel-column welcome-panel-last">
+                        <h4>Display a hit counter widget on any page or post. Its easy to change the colors and the font sizes for the numbers.</h4>
+                        <a href="http://shop.whohit.co.za/" target="_blank">
+                        	<img src="<?php echo WHTP_IMAGES_URL . 'widget_get.png'; ?>" alt="Get front end widget for who hit the page" />
+                        </a>
+                        <a href="http://shop.whohit.co.za/" class="button button-primary button-hero" style="width:100%; text-align:center;" target="_blank">Download Now</a>
+                    </div>  
+                </div>
+                <div class="postbox">
+                    <div class="handlediv" title="Click to toggle"><br /></div>
                     <h3 class="hndle">Subscribe to updates</h3>
                     <div class="inside welcome-panel-column welcome-panel-last">
 					   <?php
@@ -147,8 +158,8 @@
                     	<h3 class="hndle">View Visitor's Behaviour (IP: <?php echo $visitor_ip; ?>)</h3>
                         <div class="inside">
                            <div id="welcome-panel" class="welcome-panel">
+                           		<h3>Visitor Statistics!</h3>
                                 <div class="welcome-panel-content">
-                                    <h3>Visitor Statistics!</h3>
                                     <p class="about-description">
                                         This are the statistics for a single user/visitor with IP Address :<?php echo $visitor_ip; ?>
                                     </p>
@@ -168,11 +179,12 @@
                                 </div>
                            </div>
                            <div id="welcome-panel" class="welcome-panel">
-                                <div class="welcome-panel-content">    
+                           		<h3>Date and Time of First and Last Visit</h3>
+                                <div class="welcome-panel-content">                                	    
                                     <div class="welcome-panel-column-container">
                                         <div class="welcome-panel-column">
                                            <?php if ( $info_result ){ ?>
-                                            <h3>Date and Time of First and Last Visit</h3>
+                                            
                                             <ul>
                                                 <li>
                                                     First Visit : 

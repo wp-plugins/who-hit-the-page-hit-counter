@@ -1,0 +1,164 @@
+
+/* Welcome Panel */
+.welcome-panel {
+	position: relative;
+	overflow: auto;
+	margin: 16px 0;
+	padding: 23px 10px 0;
+	border: 1px solid #e5e5e5;
+	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+	background: #fff;
+	font-size: 13px;
+	line-height: 2.1em;
+}
+
+.welcome-panel h3 {
+	margin: 0;
+	font-size: 21px;
+	font-weight: normal;
+	line-height: 1.2;
+}
+
+.welcome-panel h4 {
+	margin: 1.33em 0 0;
+	font-size: 16px;
+}
+
+.welcome-panel li {
+	font-size: 14px;
+}
+
+.welcome-panel p {
+	color: #777;
+}
+
+.welcome-panel a {
+	text-decoration: none;
+}
+
+.welcome-panel .about-description {
+	font-size: 16px;
+	margin: 0;
+}
+
+.welcome-panel .welcome-panel-close {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	padding: 20px 15px 0 3px;
+	font-size: 13px;
+	text-decoration: none;
+	line-height: 1;
+}
+
+#welcome-panel.welcome-panel .welcome-panel-close::before {
+	position: absolute;
+	left: -18px;
+	margin-top: -2px;
+	-webkit-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}
+
+.wp-core-ui .welcome-panel .button.button-hero {
+	margin: 15px 0 3px;
+}
+
+.welcome-panel-content {
+	margin-left: 13px;
+	max-width: 1500px;
+}
+
+.welcome-panel .welcome-panel-column-container {
+	clear: both;
+	overflow: hidden;
+	position: relative;
+}
+
+.welcome-panel .welcome-panel-column {
+	width: 32%;
+	min-width: 200px;
+	float: left;
+}
+
+.ie8 .welcome-panel .welcome-panel-column {
+	min-width: 230px;
+}
+
+.welcome-panel .welcome-panel-column:first-child {
+	width: 36%;
+}
+
+.welcome-panel-column p.hide-if-no-customize {
+	margin-top: 10px;
+}
+
+.welcome-panel-column p {
+	margin-top: 7px;
+	color: #464646;
+}
+
+.welcome-panel .welcome-icon {
+	display: block;
+	padding: 0 0 8px;
+	background: transparent !important;
+}
+
+.welcome-panel .welcome-icon:before {
+	color: #888;
+	font: normal 20px/1 'dashicons';
+	speak: none;
+	display: inline-block;
+	padding: 0 10px 0 0;
+	top: -1px;
+	position: relative;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none !important;
+	vertical-align: top;
+}
+
+.welcome-panel .welcome-write-blog:before,
+.welcome-panel .welcome-edit-page:before {
+	content:'\f119';
+	top: -3px;
+}
+
+.welcome-panel .welcome-add-page:before {
+	content:'\f132';
+}
+
+.welcome-panel .welcome-view-site:before {
+	content:'\f115';
+	top: -2px;
+}
+
+.welcome-panel .welcome-widgets-menus:before {
+	content:'\f116';
+	top: -2px;
+}
+
+.welcome-panel .welcome-comments:before {
+	content:'\f117';
+	top: -1px;
+}
+
+.welcome-panel .welcome-learn-more:before {
+	content:'\f118';
+	top: -1px;
+}
+
+.welcome-panel .welcome-widgets-menus {
+	line-height: 16px;
+}
+
+.welcome-panel .welcome-panel-column ul {
+	margin: 0.8em 1em 1em 0;
+}
+
+.welcome-panel .welcome-panel-column li {
+	line-height: 16px;
+	list-style-type: none;
+}
+
+/*  */

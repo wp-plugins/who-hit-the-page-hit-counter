@@ -18,6 +18,7 @@
 						</form>
                     </div>  
                 </div>
+                
                 <div class="postbox">
                     <div class="handlediv" title="Click to toggle"><br /></div>
                     <h3 class="hndle">Subscribe to updates</h3>
@@ -31,7 +32,17 @@
                         <p>Thank you once again!</p>
                     </div>
                 </div>
-                
+                <div class="postbox">
+                    <div class="handlediv" title="Click to toggle"><br /></div>
+                    <h3 class="hndle">Need More</h3>
+                    <div class="inside welcome-panel-column welcome-panel-last">
+                        <h4>Display a hit counter widget on any page or post. Its easy to change the colors and the font sizes for the numbers.</h4>
+                        <a href="http://shop.whohit.co.za/" target="_blank">
+                        	<img src="<?php echo WHTP_IMAGES_URL . 'widget_get.png'; ?>" alt="Get front end widget for who hit the page" />
+                        </a>
+                        <a href="http://shop.whohit.co.za/" class="button button-primary button-hero" style="width:100%; text-align:center;" target="_blank">Download Now</a>
+                    </div>  
+                </div>
                 <div class="postbox">
                     <div class="handlediv" title="Click to toggle"><br /></div>
                     <h3 class="hndle">Please Rate this plugin</h3>
@@ -76,17 +87,17 @@ if (is_admin() ) {
 	$t6 = $t3 . $t3;
 	# check if there is an action to reset counters
 	if ( isset ( $_POST['reset_page'] ) ){
-		echo '<div class="viewer">';
+		echo '<div class="viewer wrap">';
 		whtp_reset_page_count();
 		echo '</div>';
 	}
 	if ( isset( $_POST['delete_page'] ) ) {
-		echo '<div class="viewer">';
+		echo '<div class="viewer wrap">';
 		whtp_delete_page();
 		echo '</div>';
 	}
 	if ( isset( $_POST['discount_page'] ) ) {
-		echo '<div class="viewer">';
+		echo '<div class="viewer wrap">';
 		whtp_discount_page();
 		echo '</div>';
 	}
